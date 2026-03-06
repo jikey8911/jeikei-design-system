@@ -1,10 +1,14 @@
 
-# JeiKei Neural Grid
+# JeiKei Neural Design System
 
-Includes:
-- Animated neural grid background
-- Glow spark effects
-- React hook useNeuralGrid()
+Dark UI system with:
 
-Usage:
-Import CSS, render <NeuralBackground />, call useNeuralGrid().
+- Tailwind config
+- Neural grid animated background
+- Neon UI components
+- Scripts for scanning repos
+- Demo page
+
+Run demo:
+
+open demo/index.html

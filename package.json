@@ -1,0 +1,14 @@
+
+{
+  "name": "jeikei-neural-design-system",
+  "version": "0.1.0",
+  "description": "Neural dark design system with Tailwind and animated neural grid",
+  "main": "index.js",
+  "scripts": {
+    "scan:repos": "node scripts/repo-scanner/scan-repos.js",
+    "adapt:components": "node scripts/component-adapter/adapt-components.js",
+    "install:design": "node scripts/installer/install-design-system.js"
+  },
+  "keywords": ["tailwind","design-system","neural","ui"],
+  "license": "MIT"
+}

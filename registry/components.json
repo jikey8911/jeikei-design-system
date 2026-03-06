@@ -1,0 +1,11 @@
+{
+  "buttons": [
+    "button-primary"
+  ],
+  "cards": [
+    "card-neural"
+  ],
+  "inputs": [
+    "input-neural"
+  ]
+}

@@ -1,0 +1,13 @@
+
+body{
+ background:#05070a;
+ color:white;
+ font-family:system-ui;
+}
+
+.card-neural{
+ background:#0b0f14;
+ border:1px solid rgba(0,255,156,.2);
+ box-shadow:0 0 20px rgba(0,255,156,.15);
+ border-radius:12px;
+}
