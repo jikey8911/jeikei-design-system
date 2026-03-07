@@ -15,7 +15,7 @@ A professional, futuristic design system with a neural glass-neon aesthetic.
 - `src/neural`: Core neural animation engine.
 - `src/components`: UI components organized by category (surfaces, visuals, feedback, etc.).
 - `src/hooks`: Custom hooks for system integration and effects.
-- `demo/dashboard`: A complete Mission Control dashboard demo.
+- `docs/dashboard`: A complete Mission Control dashboard demo.
 - `scripts/`: Automation scripts for component synchronization.
 
 ## Installation
