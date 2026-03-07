@@ -3,7 +3,7 @@ module.exports = {
   darkMode: "class",
   content: [
     "./components/**/*.{js,jsx,ts,tsx,html}",
-    "./demo/**/*.{html,js}"
+    "./docs/**/*.{html,js,tsx}"
   ],
   theme: {
     extend: {
