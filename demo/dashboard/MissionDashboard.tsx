@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import { NeuralGrid } from '../../src/neural/NeuralGrid';
-import { GlassCard } from '../../src/components/surfaces/GlassCard';
-import { StatCard } from '../../src/components/surfaces/StatCard';
-import { NeonButton } from '../../src/components/surfaces/NeonButton';
-import { NeonInput } from '../../src/components/surfaces/NeonInput';
-import { ProgressRing } from '../../src/components/visuals/ProgressRing';
-import { DataGrid } from '../../src/components/data/DataGrid';
-import { Tabs } from '../../src/components/navigation/Tabs';
-import { Modal } from '../../src/components/feedback/Modal';
+import React from 'react';
+import {
+  StatCard,
+  ProgressRing,
+  GlassCard,
+  NeonButton,
+  NeonInput,
+  Tabs,
+  DataGrid,
+  NeuralGrid,
+  Modal,
+  Toast
+} from '../../src';
+import { ActivityIcon, CommandIcon, ShieldIcon, TerminalIcon } from '../../src/components/icons';
 import { useNeuralSystem } from '../../src/hooks/useNeuralSystem';
 
 export const MissionDashboard = () => {
   useNeuralSystem(true);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = React.useState('overview');
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [showToast, setShowToast] = React.useState(false);
 
   const mockData = [
     { id: 1, agent: 'PHOENIX-01', status: 'ACTIVE', task: 'GRID_OPTIMIZATION', progress: '87%' },
@@ -34,12 +39,22 @@ export const MissionDashboard = () => {
     <div className="min-h-screen bg-[#05070a] text-white relative overflow-hidden font-sans">
       <NeuralGrid sparkles={true} />
 
-      <div className="relative z-10 p-8 max-w-7xl mx-auto space-y-8">
+      {/* Sidebar Simulation */}
+      <aside className="fixed left-0 top-0 bottom-0 w-20 border-r border-[rgba(0,255,156,0.1)] bg-black/40 backdrop-blur-xl z-20 flex flex-col items-center py-10 space-y-8">
+        <CommandIcon size={32} />
+        <div className="flex flex-col gap-6 pt-10">
+          <button className="hover:scale-110 transition-transform"><ActivityIcon color="#00ff9c" /></button>
+          <button className="hover:scale-110 transition-transform"><ShieldIcon color="rgba(0,255,156,0.4)" /></button>
+          <button className="hover:scale-110 transition-transform"><TerminalIcon color="rgba(0,255,156,0.4)" /></button>
+        </div>
+      </aside>
+
+      <div className="relative z-10 pl-28 pr-8 py-8 max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <header className="flex items-center justify-between border-b border-[rgba(0,255,156,0.1)] pb-6">
           <div>
-            <h1 className="text-4xl font-black text-[#00ff9c] tracking-tighter uppercase">
-              Mission Control
+            <h1 className="text-4xl font-black text-[#00ff9c] tracking-tighter uppercase flex items-center gap-3">
+              <ActivityIcon size={32} /> Mission Control
             </h1>
             <p className="text-[rgba(0,255,156,0.5)] font-mono text-xs tracking-[0.3em] mt-1">
               SYSTEM STATUS: OPTIMAL // ENCRYPTED SESSION
@@ -68,7 +83,9 @@ export const MissionDashboard = () => {
               tabs={[
                 { id: 'overview', label: 'Overview', content: (
                   <div className="space-y-6">
-                    <h3 className="text-[#00ff9c] font-mono text-sm uppercase">Active Agent Network</h3>
+                    <h3 className="text-[#00ff9c] font-mono text-sm uppercase flex items-center gap-2">
+                      <TerminalIcon size={16} /> Active Agent Network
+                    </h3>
                     <DataGrid data={mockData} columns={columns} />
                   </div>
                 )},
@@ -79,12 +96,12 @@ export const MissionDashboard = () => {
 
           <GlassCard className="flex flex-col items-center justify-center py-10 space-y-6">
             <h3 className="text-[#00ff9c] font-mono text-sm uppercase self-start">System Integration</h3>
-            <ProgressRing value={78} size={200} />
+            <ProgressRing value={78} size={180} />
             <div className="text-center">
               <p className="text-xs text-[rgba(0,255,156,0.5)] uppercase tracking-widest">Neural Linkage</p>
               <p className="text-xl font-bold text-cyan-300">CORE_SYNC_ACTIVE</p>
             </div>
-            <NeonButton variant="secondary" className="w-full">OPTIMIZE CORE</NeonButton>
+            <NeonButton variant="secondary" className="w-full" onClick={() => setShowToast(true)}>OPTIMIZE CORE</NeonButton>
           </GlassCard>
         </div>
       </div>
@@ -105,6 +122,16 @@ export const MissionDashboard = () => {
           </div>
         </div>
       </Modal>
+
+      {showToast && (
+        <div className="fixed bottom-8 right-8 z-50">
+          <Toast
+            message="SYSTEM_OPTIMIZATION_COMPLETE // 142ms"
+            type="success"
+            onClose={() => setShowToast(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,18 +1,18 @@
-export const tokens = {
-  colors: {
-    neuralGreen: "#00ff9c",
-    neuralCyan: "#00ffe1",
-    neuralBg: "#05070a",
-    neuralPanel: "#0b0f14",
-    glassBorder: "rgba(0, 255, 156, 0.2)",
-    glassBg: "rgba(11, 15, 20, 0.45)",
-  },
-  shadows: {
-    neonGreen: "0 0 12px rgba(0, 255, 156, 0.4)",
-    neonCyan: "0 0 12px rgba(0, 255, 225, 0.4)",
-    glass: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
-  },
-  transitions: {
-    default: "all 0.3s ease",
-  }
+export const spacing = {
+  xs: "0.25rem",
+  sm: "0.5rem",
+  md: "1rem",
+  lg: "1.5rem",
+  xl: "2rem",
+  "2xl": "3rem",
+  "3xl": "4rem",
+};
+
+export const radius = {
+  xs: "4px",
+  sm: "8px",
+  md: "12px",
+  lg: "16px",
+  xl: "24px",
+  full: "9999px",
 };
