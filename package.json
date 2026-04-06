@@ -1,33 +1,45 @@
-
 {
   "name": "jeikei-neural-design-system",
   "version": "0.1.0",
   "description": "Neural dark design system with Tailwind and animated neural grid",
-  "main": "src/index.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "scan:repos": "node scripts/repo-scanner/scan-repos.js",
     "adapt:components": "node scripts/component-adapter/adapt-components.js",
     "install:design": "node scripts/installer/install-design-system.js",
     "import:repos": "node scripts/import-repos.js",
-    "build": "tsc",
+    "dev": "vite",
+    "build": "npm run build:lib && npm run build:types",
+    "build:lib": "vite build",
+    "build:types": "tsc -p tsconfig.build.json",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.0.0",
-    "@storybook/addon-interactions": "^8.0.0",
-    "@storybook/addon-links": "^8.0.0",
-    "@storybook/blocks": "^8.0.0",
-    "@storybook/react": "^8.0.0",
-    "@storybook/react-vite": "^8.0.0",
+    "@storybook/react": "10.3.4",
+    "@storybook/react-vite": "10.3.4",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "storybook": "^8.0.0",
+    "storybook": "10.3.4",
     "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "vite": "^7.0.0"
   },
-  "keywords": ["tailwind","design-system","neural","ui"],
-  "license": "MIT"
+  "keywords": [
+    "tailwind",
+    "design-system",
+    "neural",
+    "ui"
+  ],
+  "license": "MIT",
+  "type": "module"
 }
