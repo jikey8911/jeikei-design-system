@@ -174,8 +174,9 @@ function App() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 h-full">
             {/* CENTRAL NEURAL MAP */}
             <div className="xl:col-span-2 space-y-6">
-              <NeoCard title="Dynamic Neural Topology" className="h-[500px] border-neo-accent/20">
-                <div className="absolute inset-0 overflow-hidden rounded-xl bg-transparent">
+              <NeoCard title="Dynamic Neural Topology" className="h-[500px] border-neo-accent/20 relative group">
+                <div className="absolute inset-0 overflow-hidden rounded-xl bg-black">
+                   <NeuralBackground mode="contained" />
                 </div>
                 <div className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none">
                    <div className="flex justify-between items-start">

@@ -17,6 +17,12 @@ export default defineConfig({
     rollupOptions: {
       external: ['react', 'react-dom', 'clsx'],
       output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'style.css';
+          }
+          return assetInfo.name || '[name].[ext]';
+        },
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',

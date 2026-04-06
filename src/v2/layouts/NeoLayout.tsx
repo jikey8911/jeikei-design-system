@@ -11,7 +11,7 @@ export interface NeoLayoutProps {
 
 export const NeoLayout: React.FC<NeoLayoutProps> = ({ children, showScanlines = true }) => {
   return (
-    <div className="jk-layout-v2 relative min-h-screen bg-black text-white font-outfit selection:bg-neo-accent selection:text-black">
+    <div className="jk-layout-v2 relative min-h-screen bg-transparent text-white font-outfit selection:bg-neo-accent selection:text-black">
       {/* Global HUD Layer */}
       {showScanlines && <div className="jk-scanline" />}
       
