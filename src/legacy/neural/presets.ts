@@ -29,5 +29,5 @@ export const neuralPresets = {
   },
 };
 
-export const getPreset = (name = 'nebula') => neuralPresets[name] ?? neuralPresets['nebula'];
+export const getPreset = (name = 'nebula') => (neuralPresets as any)[name] ?? neuralPresets['nebula'];
 

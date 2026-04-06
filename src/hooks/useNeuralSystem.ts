@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { NeuralEngine, NeuralEngineOptions, NeuralStateSnapshot } from '../neural/NeuralEngine';
+import { NeuralEngine, NeuralEngineOptions, NeuralStateSnapshot } from '../legacy/neural/NeuralEngine';
 
 export const useNeuralSystem = (options: NeuralEngineOptions = {}) => {
   const engineRef = useRef<NeuralEngine | null>(null);

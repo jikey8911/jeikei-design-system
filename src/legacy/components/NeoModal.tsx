@@ -32,7 +32,7 @@ export const NeoModal: React.FC<React.PropsWithChildren<Props>> = ({ open, title
       <div className="glass-surface max-w-lg w-full mx-4 border border-white/10 shadow-panel">
         <header className="flex items-start justify-between p-6 pb-3">
           {title && <h3 className="text-xl font-bold text-neo-text">{title}</h3>}
-          <NeoButton variant="ghost" size="sm" aria-label="Close modal" onClick={onClose}>
+          <NeoButton variant="ghost" aria-label="Close modal" onClick={onClose}>
             ✕
           </NeoButton>
         </header>

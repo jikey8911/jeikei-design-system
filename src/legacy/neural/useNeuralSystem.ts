@@ -1,2 +1,2 @@
-export { useNeuralSystem } from '../hooks/useNeuralSystem';
+export { useNeuralSystem } from '../../hooks/useNeuralSystem';
 

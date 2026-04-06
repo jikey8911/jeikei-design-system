@@ -33,7 +33,7 @@ export const NeoToast: React.FC<ToastProps> = ({
         {description && <p className="text-sm text-neo-muted mt-1">{description}</p>}
       </div>
       {actionLabel && (
-        <NeoButton size="sm" variant="outline" onClick={onAction}>
+        <NeoButton variant="outline" onClick={onAction}>
           {actionLabel}
         </NeoButton>
       )}
