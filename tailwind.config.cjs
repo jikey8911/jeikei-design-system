@@ -6,23 +6,28 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        outfit: ['Outfit', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
       colors: {
-        'neo-bg': '#04060b',
+        'neo-bg': '#02040a',
         'neo-surface': '#0b0f14',
-        'neo-glass': 'rgba(12, 16, 24, 0.65)',
-        'neo-border': '#0f1b2d',
-        'neo-accent': '#20f6b8',
-        'neo-accent-strong': '#00ff9c',
-        'neo-magenta': '#ff4bd8',
-        'neo-cyan': '#34d8ff',
+        'neo-glass': 'rgba(12, 16, 24, 0.45)',
+        'neo-border': 'rgba(0, 255, 255, 0.15)',
+        'neo-accent': '#00ffff',
+        'neo-accent-strong': '#ffffff',
+        'neo-magenta': '#ff00ff',
+        'neo-cyan': '#00ffff',
         'neo-amber': '#f2b93b',
-        'neo-muted': '#8aa2c2',
+        'neo-muted': '#4a5b7c',
         'neo-text': '#e5f0ff',
         slate: colors.slate,
       },
       boxShadow: {
-        glow: '0 0 20px rgba(0,255,156,0.35)',
-        'glow-strong': '0 0 32px rgba(0,255,156,0.6)',
+        'neon-cyan': '0 0 15px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2)',
+        'neon-magenta': '0 0 15px rgba(255, 0, 255, 0.4), 0 0 30px rgba(255, 0, 255, 0.2)',
+        'neon-primary': '0 0 12px rgba(0, 255, 255, 0.6), 0 0 24px rgba(0, 255, 255, 0.3)',
         panel: '0 30px 120px rgba(0,0,0,0.45)',
       },
       borderRadius: {

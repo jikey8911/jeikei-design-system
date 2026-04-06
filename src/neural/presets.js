@@ -20,6 +20,13 @@ export const neuralPresets = {
     interactionStrength: 1.1,
     spacing: 68,
   },
+  nebula: {
+    nodeDensity: 0.95,
+    glowIntensity: 2.2,
+    pulseSpeed: 1.8,
+    interactionStrength: 1.2,
+    spacing: 55,
+  },
 };
 
-export const getPreset = (name = 'mission-control') => neuralPresets[name] ?? neuralPresets['mission-control'];
+export const getPreset = (name = 'nebula') => neuralPresets[name] ?? neuralPresets['nebula'];

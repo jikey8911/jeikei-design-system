@@ -18,16 +18,19 @@ export const NeoPanel: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <section
       className={cx(
-        'glass-surface border border-white/10 rounded-neo-lg shadow-panel',
-        subdued && 'bg-neo-surface/70',
+        'glass-surface overflow-hidden transition-all duration-500',
+        subdued && 'bg-neo-surface/40 backdrop-blur-sm',
         className
       )}
       {...rest}
     >
-      <header className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-        <div>
-          <h4 className="text-lg font-semibold text-neo-text">{title}</h4>
-          <p className="text-xs text-neo-muted uppercase tracking-[0.2em]">Neural Monitor</p>
+      <header className="flex items-center justify-between px-6 py-5 border-b border-white/5 relative">
+        <div className="flex items-center gap-4">
+          <div className="w-1 h-8 bg-neo-accent shadow-neon-cyan rounded-full" />
+          <div>
+            <h4 className="text-xs font-bold text-neo-text uppercase tracking-[0.3em]">{title}</h4>
+            <p className="text-[9px] text-neo-muted uppercase tracking-[0.2em] font-medium">Neural Monitor Unit</p>
+          </div>
         </div>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </header>
