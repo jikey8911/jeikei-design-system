@@ -16,10 +16,6 @@
       "import": "./dist/v2.js",
       "require": "./dist/v2.cjs"
     },
-    "./legacy": {
-      "import": "./dist/legacy.js",
-      "require": "./dist/legacy.cjs"
-    },
     "./style.css": "./dist/style.css",
     "./dist/style.css": "./dist/style.css"
   },

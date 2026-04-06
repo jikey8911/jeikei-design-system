@@ -9,7 +9,6 @@ export default defineConfig({
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
         v2: path.resolve(__dirname, 'src/v2/index.ts'),
-        legacy: path.resolve(__dirname, 'src/legacy/index.ts'),
       },
       name: 'JeiKeiDesignSystem',
       formats: ['es', 'cjs'],

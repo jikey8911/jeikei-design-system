@@ -1,0 +1,7 @@
+
+> jeikei-design-system@0.2.0 build:types F:\openClow\.openclaw\workspace\antigravity\jeikei-design-system
+> tsc -p tsconfig.build.json
+
+src/hooks/useNeuralSystem.ts(2,72): error TS2307: Cannot find module '../legacy/neural/NeuralEngine' or its corresponding type declarations.
+src/v2/hooks/useNeuralSystem.ts(2,72): error TS2307: Cannot find module '../legacy/neural/NeuralEngine' or its corresponding type declarations.
+ÔÇëELIFECYCLEÔÇë Command failed with exit code 2.
