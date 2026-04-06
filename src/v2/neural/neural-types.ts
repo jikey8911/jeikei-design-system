@@ -19,6 +19,7 @@ export interface NeuralEdge {
 
 export interface NeuralPulse {
   nodeId: number;
+  originId?: number; // Previous node to prevent immediate back-propagation
   strength: number;
   life: number;
 }
@@ -27,6 +28,7 @@ export interface NeuralState {
   nodes: NeuralNode[];
   edges: NeuralEdge[];
   pulses: NeuralPulse[];
+  activeEdges: Set<string>; // "from-to" IDs of edges currently carrying energy
   totalEnergy: number;
 }
 

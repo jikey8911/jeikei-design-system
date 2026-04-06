@@ -1,12 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useSystem } from '../system/SystemContext';
+import { NeuralState, NeuralNode, NeuralEdge } from './neural-types';
 // @ts-ignore
 import vertexShader from './shaders/vertex.glsl?raw';
 // @ts-ignore
 import fragmentShader from './shaders/fragment.glsl?raw';
+// @ts-ignore
+import edgeVertexShader from './shaders/edgeVertex.glsl?raw';
+// @ts-ignore
+import edgeFragmentShader from './shaders/edgeFragment.glsl?raw';
 
-export const NeuralBackground: React.FC = () => {
+export interface NeuralBackgroundProps {
+  mode?: 'fullscreen' | 'contained';
+  className?: string;
+}
+
+export const NeuralBackground: React.FC<NeuralBackgroundProps> = ({ 
+  mode = 'fullscreen', 
+  className = "" 
+}) => {
   const { engine, theme } = useSystem();
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer>();
@@ -15,24 +28,35 @@ export const NeuralBackground: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current || !engine) return;
 
-    // 1. Renderer Setup (Glass-friendly alpha)
+    const container = containerRef.current;
+    const isFullscreen = mode === 'fullscreen';
+
+    // 1. Renderer Setup
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true, 
       alpha: true,
       powerPreference: "high-performance"
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    const updateSize = () => {
+      const width = isFullscreen ? window.innerWidth : container.clientWidth;
+      const height = isFullscreen ? window.innerHeight : container.clientHeight;
+      renderer.setSize(width, height);
+      return { width, height };
+    };
+
+    const initialSize = updateSize();
     renderer.setClearColor(0x000000, 0);
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(
-      -window.innerWidth / 2, 
-      window.innerWidth / 2, 
-      window.innerHeight / 2, 
-      -window.innerHeight / 2, 
+      -initialSize.width / 2, 
+      initialSize.width / 2, 
+      initialSize.height / 2, 
+      -initialSize.height / 2, 
       0.1, 1000
     );
     camera.position.z = 10;
@@ -48,22 +72,26 @@ export const NeuralBackground: React.FC = () => {
       uniforms: {
         uTime: { value: 0 },
         uAccent: { value: new THREE.Color(theme === 'mission' ? 0xf2b93b : 0x34d8ff) },
-        uGlowIntensity: { value: 1.2 },
-        uSize: { value: 5.5 }
+        uGlowIntensity: { value: 2.5 },
+        uSize: { value: isFullscreen ? 10.0 : 6.0 }
       }
     });
 
     const points = new THREE.Points(pointsGeo, pointsMat);
     scene.add(points);
 
-    // 3. Edges Material (Base Line)
+    // 3. Edges Material (Advanced Shader for trails)
     const edgesGeo = new THREE.BufferGeometry();
-    const edgesMat = new THREE.LineBasicMaterial({
+    const edgesMat = new THREE.ShaderMaterial({
+      vertexShader: edgeVertexShader,
+      fragmentShader: edgeFragmentShader,
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
-      color: theme === 'mission' ? 0xf2b93b : 0x34d8ff,
-      opacity: 0.12
+      uniforms: {
+        uTime: { value: 0 },
+        uAccent: { value: new THREE.Color(theme === 'mission' ? 0xf2b93b : 0x34d8ff) }
+      }
     });
 
     const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
@@ -73,17 +101,17 @@ export const NeuralBackground: React.FC = () => {
     let frameCount = 0;
     let lastFpsUpdate = performance.now();
 
-    const unsubscribe = engine.subscribe((state) => {
-      const { nodes, edges } = state;
-      
+    const unsubscribe = engine.subscribe((state: NeuralState) => {
+      const { nodes, edges, activeEdges } = state;
+      const currentSize = renderer.getSize(new THREE.Vector2());
+
       // Update Node Attributes
       const posArr = new Float32Array(nodes.length * 3);
       const enArr = new Float32Array(nodes.length);
       
-      nodes.forEach((n, i) => {
-        // Center the grid
-        posArr[i * 3] = n.position[0] - window.innerWidth / 2;
-        posArr[i * 3 + 1] = n.position[1] - window.innerHeight / 2;
+      nodes.forEach((n: NeuralNode, i: number) => {
+        posArr[i * 3] = n.position[0] - currentSize.x / 2;
+        posArr[i * 3 + 1] = n.position[1] - currentSize.y / 2;
         posArr[i * 3 + 2] = n.position[2];
         enArr[i] = n.energy;
       });
@@ -91,24 +119,34 @@ export const NeuralBackground: React.FC = () => {
       pointsGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
       pointsGeo.setAttribute('aEnergy', new THREE.BufferAttribute(enArr, 1));
       
-      // Update Edge Attributes
+      // Update Edge Attributes (with activity tracking)
       const edgePosArr = new Float32Array(edges.length * 6);
-      edges.forEach((edge, i) => {
+      const activeArr = new Float32Array(edges.length * 2);
+
+      edges.forEach((edge: NeuralEdge, i: number) => {
         const nodeA = nodes[edge.from];
         const nodeB = nodes[edge.to];
         if (nodeA && nodeB) {
           const idx = i * 6;
-          edgePosArr[idx] = nodeA.position[0] - window.innerWidth / 2;
-          edgePosArr[idx + 1] = nodeA.position[1] - window.innerHeight / 2;
+          edgePosArr[idx] = nodeA.position[0] - currentSize.x / 2;
+          edgePosArr[idx + 1] = nodeA.position[1] - currentSize.y / 2;
           edgePosArr[idx + 2] = nodeA.position[2];
-          edgePosArr[idx + 3] = nodeB.position[0] - window.innerWidth / 2;
-          edgePosArr[idx + 4] = nodeB.position[1] - window.innerHeight / 2;
+          edgePosArr[idx + 3] = nodeB.position[0] - currentSize.x / 2;
+          edgePosArr[idx + 4] = nodeB.position[1] - currentSize.y / 2;
           edgePosArr[idx + 5] = nodeB.position[2];
+
+          const edgeId = [edge.from, edge.to].sort((a, b) => a - b).join('-');
+          const isActive = activeEdges.has(edgeId) ? 1.0 : 0.0;
+          activeArr[i * 2] = isActive;
+          activeArr[i * 2 + 1] = isActive;
         }
       });
+
       edgesGeo.setAttribute('position', new THREE.BufferAttribute(edgePosArr, 3));
+      edgesGeo.setAttribute('aActive', new THREE.BufferAttribute(activeArr, 1));
       
       pointsMat.uniforms.uTime.value = performance.now() * 0.001;
+      edgesMat.uniforms.uTime.value = performance.now() * 0.001;
       renderer.render(scene, camera);
       
       frameCount++;
@@ -121,34 +159,49 @@ export const NeuralBackground: React.FC = () => {
     });
 
     const handleResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.left = -window.innerWidth / 2;
-      camera.right = window.innerWidth / 2;
-      camera.top = window.innerHeight / 2;
-      camera.bottom = -window.innerHeight / 2;
+      const size = updateSize();
+      camera.left = -size.width / 2;
+      camera.right = size.width / 2;
+      camera.top = size.height / 2;
+      camera.bottom = -size.height / 2;
       camera.updateProjectionMatrix();
     };
 
-    window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+
+    if (isFullscreen) {
+      window.addEventListener('resize', handleResize);
+    } else {
+      resizeObserver.observe(container);
+    }
 
     return () => {
       unsubscribe();
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       renderer.dispose();
-      if (containerRef.current?.contains(renderer.domElement)) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
       }
     };
-  }, [engine, theme]);
+  }, [engine, theme, mode]);
+
+  const baseClasses = mode === 'fullscreen' 
+    ? "fixed inset-0 -z-10 bg-[#020202] pointer-events-none" 
+    : "relative w-full h-full min-h-[300px] overflow-hidden rounded-xl border border-white/5 jk-glass pointer-events-none";
 
   return (
-    <div ref={containerRef} className="fixed inset-0 -z-10 bg-[#020202] pointer-events-none">
+    <div ref={containerRef} className={`${baseClasses} ${className}`}>
        {/* Background Noise/Texture */}
        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
        
-       <div className="absolute top-4 right-6 font-mono text-[9px] tracking-widest text-neo-accent opacity-30 select-none">
-          SYSTEM_LOAD: {fps} FPS // {theme.toUpperCase()}_MODE
-       </div>
+       {mode === 'fullscreen' && (
+         <div className="absolute top-4 right-6 font-mono text-[9px] tracking-widest text-neo-accent opacity-30 select-none">
+            SYSTEM_LOAD: {fps} FPS // {theme.toUpperCase()}_MODE
+         </div>
+       )}
     </div>
   );
 };

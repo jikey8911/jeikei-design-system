@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { V2 } from 'jeikei-design-system';
 
-const { NeoLayout, NeoButton, NeoCard, NeoInput, useSystem } = V2;
+const { NeoLayout, NeoButton, NeoCard, NeoInput, useSystem, NeuralBackground } = V2;
 
 // --- Sub-Components for the Pro Dashboard ---
 
-const SidebarItem = ({ icon, active = false }: { icon: string; active?: boolean }) => (
-  <div className={`w-12 h-12 flex items-center justify-center rounded-xl cursor-pointer transition-all duration-300 ${active ? 'bg-neo-accent text-black' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-    <span className="text-xl">{icon}</span>
-  </div>
-);
+const SidebarItem = ({ icon, active = false }: { icon: string; active?: boolean }) => {
+  const { engine } = useSystem();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    if (engine) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      engine.emitPulse(rect.left + rect.width / 2, rect.top + rect.height / 2, 1.5);
+    }
+  };
+
+  return (
+    <div 
+      onClick={handleClick}
+      className={`w-12 h-12 flex items-center justify-center rounded-xl cursor-pointer transition-all duration-300 ${active ? 'bg-neo-accent text-black' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+    >
+      <span className="text-xl">{icon}</span>
+    </div>
+  );
+};
 
 const ActivityItem = ({ title, time, status = 'info' }: { title: string; time: string; status?: 'info' | 'success' | 'warning' }) => (
-  <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+  <div className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 jk-glass">
     <div className={`w-1.5 h-6 rounded-full mt-0.5 ${status === 'success' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : status === 'warning' ? 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]' : 'bg-neo-accent shadow-[0_0_10px_var(--neo-glow)]'}`} />
     <div className="flex flex-col">
       <span className="text-[11px] font-bold text-white/80 uppercase tracking-wider">{title}</span>
@@ -112,7 +126,7 @@ function App() {
   );
 
   const renderDashboard = () => (
-    <div className="flex h-screen w-full bg-[#020202]/50 backdrop-blur-3xl overflow-hidden fade-in">
+    <div className="flex h-screen w-full overflow-hidden fade-in relative z-20">
       {/* SIDEBAR */}
       <div className="w-20 flex flex-col items-center py-8 gap-8 border-r border-white/5 jk-glass relative z-50">
         <div className="w-10 h-10 bg-neo-accent flex items-center justify-center rounded-lg shadow-neon-primary text-black font-black text-xl mb-4">
@@ -160,27 +174,25 @@ function App() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 h-full">
             {/* CENTRAL NEURAL MAP */}
             <div className="xl:col-span-2 space-y-6">
-              <NeoCard title="Dynamic Neural Topology" className="h-[500px]">
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-                  <div className="w-[80%] h-[80%] border-2 border-neo-accent/20 rounded-full animate-pulse" />
-                  <div className="absolute w-[60%] h-[60%] border border-neo-accent/10 rounded-full" />
+              <NeoCard title="Dynamic Neural Topology" className="h-[500px] border-neo-accent/20">
+                <div className="absolute inset-0 overflow-hidden rounded-xl bg-transparent">
                 </div>
-                <div className="relative z-10 w-full h-full flex flex-col justify-between">
+                <div className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none">
                    <div className="flex justify-between items-start">
-                      <div className="p-4 border border-white/5 rounded-lg jk-glass">
+                      <div className="p-4 border border-white/5 rounded-lg jk-glass backdrop-blur-md">
                          <div className="jk-data-label text-neo-accent mb-1">Grid Coordinates</div>
                          <div className="text-lg font-mono text-white tracking-widest">34.09 // 118.24</div>
                       </div>
-                      <div className="flex gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+                      <div className="flex gap-2 p-2 bg-black/40 rounded-full border border-white/5">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-ping mt-1" />
                         <span className="jk-data-label text-green-500">Live_Stream</span>
                       </div>
                    </div>
                    
-                   <div className="flex justify-center items-center py-20">
+                   <div className="flex justify-center items-center py-20 opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="relative">
                         <div className="absolute -inset-20 bg-neo-accent/5 rounded-full blur-3xl animate-pulse" />
-                        <div className="text-8xl font-black text-white/5 tracking-tighter select-none">NEURAL_MAP</div>
+                        <div className="text-8xl font-black text-white/5 tracking-tighter select-none uppercase">Topology</div>
                       </div>
                    </div>
 

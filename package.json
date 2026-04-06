@@ -20,7 +20,8 @@
       "import": "./dist/legacy.js",
       "require": "./dist/legacy.cjs"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./dist/style.css": "./dist/style.css"
   },
   "files": [
     "dist"

@@ -19,8 +19,10 @@ void main() {
   }
   
   // Pulse scaling via energy
-  float energyBoost = vEnergy * 2.0;
-  vec3 finalColor = mix(uAccent, vec3(1.0), vEnergy * 0.5);
+  float energyBoost = vEnergy * 1.5;
+  float ambientGlow = 0.08; // Ensure it's always faintly visible
   
-  gl_FragColor = vec4(finalColor, alpha * (0.5 + energyBoost) * uGlowIntensity);
+  vec3 finalColor = mix(uAccent, vec3(1.0), vEnergy * 0.4);
+  
+  gl_FragColor = vec4(finalColor, alpha * (ambientGlow + energyBoost) * uGlowIntensity);
 }

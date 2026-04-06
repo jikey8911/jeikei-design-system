@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSystem } from '../system/SystemContext';
 import { cx } from '../../utils/cx';
 
 export interface NeoCardProps {
@@ -20,9 +21,22 @@ export const NeoCard: React.FC<NeoCardProps> = ({
   children, 
   className,
   glow = true 
-}) => {
+}: NeoCardProps) => {
+  const { engine } = useSystem();
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (engine) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      engine.emitPulse(x, y, 0.4); // Low-energy atmospheric pulse
+    }
+  };
+
   return (
-    <div className={cx(
+    <div 
+      onMouseEnter={handleMouseEnter}
+      className={cx(
       'jk-card-v2 jk-glass relative group overflow-hidden transition-all duration-500 rounded-[var(--neo-radius)] px-7 py-6 cursor-default border-white/5 active:scale-[0.99]',
       glow && 'hover:border-white/20 hover:shadow-[0_0_40px_-10px_var(--neo-glow)]',
       className

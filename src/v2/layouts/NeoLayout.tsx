@@ -17,6 +17,8 @@ export const NeoLayout: React.FC<NeoLayoutProps> = ({ children, showScanlines = 
       
       {/* Neural Simulation Layer */}
       <NeuralBackground />
+      {/* Dark Overlay for contrast */}
+      <div className="fixed inset-0 bg-black/40 pointer-events-none z-0" />
       
       {/* Global HUD Frame */}
       <div className="fixed inset-0 pointer-events-none border-[1px] border-white/5 z-[99]" />
