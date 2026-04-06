@@ -3,12 +3,15 @@ import { SystemContext, ThemeMode } from './SystemContext';
 import { NeuralEngine } from '../neural/NeuralEngine';
 import { getColorVars } from '../theme/colors';
 
-export const NeuralProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SystemProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeMode>('nebula');
   
   const engine = useMemo(() => {
     if (typeof window === 'undefined') return null;
-    return new NeuralEngine(window.innerWidth, window.innerHeight);
+    // Ensure size is valid before init
+    const w = window.innerWidth || 1920;
+    const h = window.innerHeight || 1080;
+    return new NeuralEngine(w, h);
   }, []);
 
   useEffect(() => {

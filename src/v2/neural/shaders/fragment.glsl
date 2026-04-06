@@ -1,15 +1,26 @@
-precision mediump float;
-
 varying float vEnergy;
+uniform vec3 uAccent;
+uniform float uGlowIntensity;
 
 void main() {
-  // softer radial falloff for "nebula star" look
-  vec2 uv = gl_PointCoord - vec2(0.5);
-  float dist = length(uv);
-  float alpha = smoothstep(0.5, 0.0, dist);
-  float glow = pow(alpha, 2.2) * (0.3 + vEnergy * 2.2);
-
-  // Cyan (energy=1.0) -> Deep Blue (energy=0.0)
-  vec3 color = mix(vec3(0.0, 0.4, 1.0), vec3(0.0, 1.0, 1.0), vEnergy);
-  gl_FragColor = vec4(color, glow);
+  float dist = distance(gl_PointCoord, vec2(0.5));
+  if (dist > 0.5) discard;
+  
+  // Concentric bloom intensity
+  float alpha = 0.0;
+  
+  // Core: 0.0-0.1
+  if (dist < 0.1) {
+    alpha = 1.0;
+  } else {
+    // Inverse exponential bloom for the halo
+    float bloom = (1.0 - dist * 2.0);
+    alpha = pow(bloom, 2.5);
+  }
+  
+  // Pulse scaling via energy
+  float energyBoost = vEnergy * 2.0;
+  vec3 finalColor = mix(uAccent, vec3(1.0), vEnergy * 0.5);
+  
+  gl_FragColor = vec4(finalColor, alpha * (0.5 + energyBoost) * uGlowIntensity);
 }

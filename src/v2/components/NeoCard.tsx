@@ -23,32 +23,35 @@ export const NeoCard: React.FC<NeoCardProps> = ({
 }) => {
   return (
     <div className={cx(
-      'jk-card relative jk-glass p-6 rounded-[var(--neo-radius)] overflow-hidden transition-all duration-500 hover:scale-[1.01]',
-      glow && 'jk-neo-glow',
+      'jk-card-v2 jk-glass group transition-all duration-500 rounded-[var(--neo-radius)] px-7 py-6 cursor-default border-white/5 active:scale-[0.99]',
+      glow && 'hover:border-white/20 hover:shadow-[0_0_40px_-10px_var(--neo-glow)]',
       className
     )}>
-      {/* Header Accent Bar */}
-      <div className="absolute top-0 left-3 right-3 h-[1px] bg-gradient-to-r from-transparent via-[var(--neo-accent)]/80 to-transparent opacity-40" />
+      {/* Decorative localized light-bleed flare */}
+      <div className="jk-card-flare group-hover:opacity-20 transition-opacity duration-1000" />
       
-      <div className="relative z-10 flex flex-col gap-1">
+      <div className="relative z-10 flex flex-col space-y-4">
         {title && (
-          <header className="flex justify-between items-start mb-2">
-            <span className="jk-hud-heading text-neo-accent opacity-70">{title}</span>
-            {trend && (
-              <span className={cx(
-                 'text-[8px] font-mono tracking-tighter px-1 rounded bg-[var(--neo-bg)]',
-                 trend.direction === 'up' ? 'text-green-400' : 
-                 trend.direction === 'down' ? 'text-red-400' : 'text-neo-muted'
-              )}>
-                {trend.direction === 'up' ? '▲' : trend.direction === 'down' ? '▼' : '●'} {trend.value}
-              </span>
-            )}
-          </header>
+          <h3 className="jk-hud-heading text-[10px] tracking-[0.25em] text-white/50 uppercase">
+            {title}
+          </h3>
         )}
         
-        {value && (
-          <div className="text-3xl font-bold tracking-tight text-white mb-2 drop-shadow-[0_0_12px_var(--neo-glow)]">
-            {value}
+        {value !== undefined && (
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold tracking-tighter text-white drop-shadow-sm">
+              {value}
+            </span>
+            {trend && (
+              <span className={cx(
+                'jk-data-label text-[10px] uppercase font-bold px-2 py-0.5 rounded-sm',
+                trend.direction === 'up' ? 'text-green-400 bg-green-400/10' : 
+                trend.direction === 'down' ? 'text-red-400 bg-red-400/10' : 
+                'text-neo-accent bg-neo-accent/10'
+              )}>
+                {trend.value}
+              </span>
+            )}
           </div>
         )}
         

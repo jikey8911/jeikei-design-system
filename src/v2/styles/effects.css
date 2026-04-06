@@ -1,29 +1,73 @@
+/* 
+ * JEIKEI V2 PRO - Deep Glassmorphism & Neural Interface Effects
+ */
+
+:root {
+  --jk-glass-bg: rgba(7, 10, 20, 0.45);
+  --jk-glass-border: rgba(255, 255, 255, 0.08);
+  --jk-glass-blur: 24px;
+}
+
 .jk-glass {
+  background: var(--jk-glass-bg);
+  backdrop-filter: blur(var(--jk-glass-blur));
+  -webkit-backdrop-filter: blur(var(--jk-glass-blur));
+  border: 1px solid var(--jk-glass-border);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle Top-Left Edge Light (seen in reference) */
+.jk-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 25%);
+  pointer-events: none;
+}
+
+/* Strong Neon Primary Glow */
+.jk-neon-primary {
+  box-shadow: 0 0 20px -5px var(--neo-glow);
+  border: 1px solid var(--neo-accent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jk-neon-primary:hover {
+  box-shadow: 0 0 35px -2px var(--neo-glow);
+  transform: translateY(-1px);
+}
+
+/* Scanline Overlay Refined */
+.jk-scanline {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
+    to bottom,
+    transparent 50%,
+    rgba(255, 255, 255, 0.01) 50%
   );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-size: 100% 4px;
+  z-index: 1000;
+  opacity: 0.15;
 }
 
-.jk-neo-glow {
-  box-shadow: 0 0 20px var(--neo-glow);
-  transition: box-shadow 0.3s ease;
-}
-
-.jk-neo-glow:hover {
-  box-shadow: 0 0 40px var(--neo-glow);
-}
-
-.jk-accent-text {
-  color: var(--neo-accent);
-  text-shadow: 0 0 8px var(--neo-glow);
-}
-
-.jk-border-accent {
-  border-color: var(--neo-accent);
-  box-shadow: inset 0 0 10px var(--neo-glow);
+/* Neural Trail Glow (for cards) */
+.jk-card-flare {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, var(--neo-glow) 0%, transparent 70%);
+  filter: blur(40px);
+  opacity: 0.05;
+  pointer-events: none;
 }

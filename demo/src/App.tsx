@@ -1,179 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { V2 } from 'jeikei-design-system';
+import React from 'react';
+import { V2, cx } from 'jeikei-design-system';
 
-const { NeoLayout, NeoButton, NeoCard, NeuralBackground, useSystem } = V2;
-
-const ThemeToggler = () => {
-   const { theme, setTheme } = useSystem();
-   return (
-      <NeoButton
-         variant="secondary"
-         size="sm"
-         onClick={() => setTheme(theme === 'mission' ? 'nebula' : 'mission')}
-      >
-         MODE: {theme.toUpperCase()}
-      </NeoButton>
-   );
-};
-
-const SystemHUD = () => {
-   const { engine } = useSystem();
-   const [metrics, setMetrics] = useState({ energy: 0, pulses: 0 });
-
-   useEffect(() => {
-      if (!engine) return;
-      return engine.subscribe((state) => {
-         setMetrics({
-            energy: state.totalEnergy,
-            pulses: state.pulses.length
-         });
-      });
-   }, [engine]);
-
-   return (
-      <div className="flex gap-10 items-center">
-         <div className="flex flex-col items-end">
-            <span className="jk-data-label opacity-40">CORE_ENERGY</span>
-            <span className="text-neo-accent font-mono text-xs">
-               {(metrics.energy * 10).toFixed(3)} EV
-            </span>
-         </div>
-         <div className="flex flex-col items-end">
-            <span className="jk-data-label opacity-40">ACTIVE_PULSES</span>
-            <span className="text-neo-magenta font-mono text-xs">
-               {metrics.pulses}
-            </span>
-         </div>
-      </div>
-   );
-};
+const { NeoLayout, NeoButton, NeoCard, NeoInput } = V2;
 
 function App() {
-   const { engine } = useSystem();
+  return (
+    <NeoLayout showScanlines={true}>
+      <div className="max-w-[1200px] mx-auto space-y-10 py-12">
+        
+        {/* CENTERED LOGO */}
+        <div className="flex flex-col items-center justify-center space-y-1 mb-16">
+          <div className="text-4xl font-black tracking-[0.4em] text-white uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+            JEIKEI
+          </div>
+          <div className="text-[10px] tracking-[0.8em] text-white/50 uppercase ml-2">
+            DESIGN SYSTEM
+          </div>
+        </div>
 
-   const emitCenterPulse = (e: React.MouseEvent<HTMLButtonElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      engine?.emitPulse(
-         rect.left + rect.width / 2,
-         rect.top + rect.height / 2
-      );
-   };
+        {/* TOP ROW: BUTTONS & INPUT */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+           <NeoCard title="NeoButton">
+              <div className="flex gap-4 pt-2">
+                 <NeoButton variant="primary" size="sm">Primary</NeoButton>
+                 <NeoButton variant="secondary" size="sm">Secondary</NeoButton>
+                 <NeoButton variant="outline" size="sm">Outline</NeoButton>
+              </div>
+           </NeoCard>
 
-   return (
-      <NeoLayout>
-         {/* 🔥 BACKGROUND GLOBAL */}
-         <div className="fixed inset-0 -z-10">
-            <NeuralBackground />
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
-         </div>
+           <NeoCard title="NeoInput">
+              <div className="pt-2">
+                 <NeoInput placeholder="Type here..." />
+              </div>
+           </NeoCard>
+        </div>
 
-         <div className="space-y-16 relative z-10">
+        {/* MIDDLE ROW: LARGE BUTTON */}
+        <div className="flex justify-start">
+           <NeoButton variant="primary" size="lg" className="w-[300px] py-5 text-lg">
+             NeoButton
+           </NeoButton>
+        </div>
 
-            {/* HERO */}
-            <div className="flex flex-col items-center text-center space-y-6 py-16">
-               <h1 className="text-7xl font-black tracking-[0.3em] text-neo-accent drop-shadow-[0_0_40px_var(--neo-glow)]">
-                  JEIKEI
-               </h1>
+        {/* BOTTOM ROW: THREE METRICS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+           <NeoCard title="NeoCard">
+              <div className="space-y-4 pt-2">
+                 <div className="jk-data-label text-white/40 text-[11px] tracking-widest">Users Online</div>
+                 <div className="text-5xl font-bold tracking-tighter text-neo-accent">1,250</div>
+              </div>
+           </NeoCard>
 
-               <p className="jk-data-label text-neo-muted max-w-xl opacity-60">
-                  Living Neural Interface · Real-time Graph Propagation System
-               </p>
+           <NeoCard title="NeoCard">
+              <div className="space-y-4 pt-2">
+                 <div className="jk-data-label text-white/40 text-[11px] tracking-widest">Revenue</div>
+                 <div className="text-5xl font-bold tracking-tighter text-neo-accent">$32,400</div>
+              </div>
+           </NeoCard>
 
-               <div className="flex gap-4 pt-6">
-                  <NeoButton size="lg" onClick={emitCenterPulse}>
-                     Initialize System
-                  </NeoButton>
-                  <ThemeToggler />
-               </div>
+           <NeoCard title="NeoCard">
+              <div className="space-y-4 pt-2">
+                 <div className="jk-data-label text-white/40 text-[11px] tracking-widest">CPU Usage</div>
+                 <div className="text-5xl font-bold tracking-tighter text-neo-accent">62%</div>
+              </div>
+           </NeoCard>
+        </div>
 
-               <SystemHUD />
-            </div>
+        {/* FOOTER SECTION: NEURAL GRID BG */}
+        <div className="space-y-6">
+           <div className="jk-hud-heading text-white/60 tracking-[0.2em] text-sm">Neural Grid Background</div>
+           <div className="w-full h-[400px] jk-glass border-white/5 rounded-[var(--neo-radius)] relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                 <span className="jk-data-label opacity-10 text-[10px] tracking-[1em]">SYSTEM_GRID_ACTIVE</span>
+              </div>
+           </div>
+        </div>
 
-            {/* METRICS */}
-            <div className="grid md:grid-cols-4 gap-6">
-               <NeoCard title="Node Density" value="1,402" />
-               <NeoCard title="Latency" value="0.4ms" />
-               <NeoCard title="Stability" value="99.9%" />
-               <NeoCard title="Uptime" value="∞" />
-            </div>
-
-            {/* MAIN */}
-            <div className="grid lg:grid-cols-3 gap-8">
-
-               <NeoCard title="Neural Parameters">
-                  <div className="space-y-6">
-
-                     <div>
-                        <div className="flex justify-between text-xs">
-                           <span>Propagation</span>
-                           <span className="text-neo-accent">5 Hops</span>
-                        </div>
-                        <div className="h-[2px] bg-white/10 mt-2">
-                           <div className="h-full w-full bg-neo-accent shadow-neon-primary" />
-                        </div>
-                     </div>
-
-                     <div>
-                        <div className="flex justify-between text-xs">
-                           <span>Decay</span>
-                           <span className="text-neo-magenta">0.08</span>
-                        </div>
-                        <div className="h-[2px] bg-white/10 mt-2">
-                           <div className="h-full w-[40%] bg-neo-magenta shadow-neon-magenta" />
-                        </div>
-                     </div>
-
-                     <div className="grid grid-cols-2 gap-3 pt-4">
-                        <NeoButton variant="outline" onClick={emitCenterPulse}>
-                           Purge
-                        </NeoButton>
-                        <NeoButton variant="outline" onClick={emitCenterPulse}>
-                           Sync
-                        </NeoButton>
-                     </div>
-
-                  </div>
-               </NeoCard>
-
-               <NeoCard title="Event Stream" className="lg:col-span-2">
-                  <div className="font-mono text-[10px] space-y-1 opacity-80">
-                     {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="border-b border-white/5 py-2 hover:bg-white/5 transition">
-                           [{new Date().toLocaleTimeString()}] SIGNAL_PROPAGATED_NODE_{i}
-                        </div>
-                     ))}
-                  </div>
-               </NeoCard>
-            </div>
-
-            {/* INTERACTION ZONE */}
-            <div className="jk-glass rounded-[var(--neo-radius)] border border-white/10 p-16 text-center relative overflow-hidden group">
-
-               {/* glow hover */}
-               <div className="absolute inset-0 bg-neo-accent/[0.03] opacity-0 group-hover:opacity-100 transition duration-1000" />
-
-               <div className="relative z-10 space-y-6">
-                  <h2 className="text-3xl jk-hud-heading">Neural Interaction</h2>
-
-                  <p className="jk-data-label opacity-40 max-w-md mx-auto">
-                     Trigger propagation waves across the neural mesh.
-                  </p>
-
-                  <div className="flex justify-center gap-6 pt-4">
-                     <NeoButton size="lg" onClick={emitCenterPulse}>
-                        Pulse Wave
-                     </NeoButton>
-
-                     <NeoButton variant="outline" size="lg" onClick={emitCenterPulse}>
-                        Force Sync
-                     </NeoButton>
-                  </div>
-               </div>
-            </div>
-
-         </div>
-      </NeoLayout>
-   );
+      </div>
+    </NeoLayout>
+  );
 }
 
 export default App;

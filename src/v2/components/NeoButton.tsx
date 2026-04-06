@@ -30,16 +30,16 @@ export const NeoButton: React.FC<NeoButtonProps> = ({
   const base = 'jk-neo-button relative inline-flex items-center justify-center overflow-hidden transition-all duration-300 font-bold uppercase tracking-widest';
   
   const variants = {
-    primary: 'bg-[var(--neo-accent)] text-[var(--neo-bg)] shadow-[0_0_20px_var(--neo-glow)] hover:brightness-110 active:scale-95',
-    secondary: 'jk-glass text-[var(--neo-accent)] border border-[var(--neo-accent)]/20 hover:border-[var(--neo-accent)]/60 hover:shadow-[0_0_20px_var(--neo-glow)]',
-    outline: 'bg-transparent border border-[var(--neo-accent)]/30 text-[var(--neo-accent)] hover:bg-[var(--neo-accent)]/10',
-    ghost: 'bg-transparent text-[var(--neo-muted)] hover:text-[var(--neo-accent)] hover:bg-white/5'
+    primary: 'jk-neon-primary bg-neo-accent text-black font-bold uppercase tracking-[0.2em] shadow-neon-primary active:scale-95',
+    secondary: 'jk-glass text-white/90 hover:bg-white/5 border-white/5 active:scale-95',
+    outline: 'border border-white/20 text-white/50 hover:text-white hover:border-white/40 bg-transparent active:scale-95',
+    ghost: 'text-white/40 hover:text-white hover:bg-white/5 bg-transparent'
   };
 
   const sizes = {
-    sm: 'px-4 py-2 text-[8px]',
-    md: 'px-6 py-3 text-[10px]',
-    lg: 'px-8 py-4 text-[12px]'
+    sm: 'px-4 py-1.5 text-[8px]',
+    md: 'px-8 py-2.5 text-[10px]',
+    lg: 'px-12 py-4 text-[12px] font-black'
   };
 
   return (
