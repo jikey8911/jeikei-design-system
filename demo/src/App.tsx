@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neo-bg text-neo-text relative overflow-hidden">
-      <NeuralGrid className="pointer-events-none" density={0.5} speed={1} interactive />
+      <NeuralGrid className="pointer-events-none" preset="mission-control" />
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10 space-y-8">
         <header className="flex items-center justify-between">
           <div>
@@ -156,7 +156,7 @@ const DashboardView = () => {
 };
 
 const StatCard = ({ label, value, delta }: { label: string; value: string; delta: string }) => (
-  <div className="glass-surface border border-white/5 rounded-neo-lg p-5">
+  <div className="glass-surface jk-card border border-white/5 rounded-neo-lg p-5">
     <p className="text-sm text-neo-muted uppercase tracking-[0.2em]">{label}</p>
     <p className="text-3xl font-black mt-2">{value}</p>
     <p className="text-xs text-neo-accent mt-1">Δ {delta}</p>

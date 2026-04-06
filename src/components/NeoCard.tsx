@@ -26,7 +26,7 @@ export const NeoCard: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <div
       className={cx(
-        'glass-surface text-neo-text border border-white/5 shadow-panel',
+        'glass-surface jk-card text-neo-text border border-white/5 shadow-panel',
         paddingMap[padding],
         'flex flex-col gap-4',
         className

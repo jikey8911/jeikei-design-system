@@ -14,6 +14,7 @@ export const NeuralGrid: React.FC<NeuralGridProps> = ({
   density = 0.6,
   speed = 1,
   decay = 0.01,
+  spacing = 80,
   className,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,7 +24,7 @@ export const NeuralGrid: React.FC<NeuralGridProps> = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const engine = new NeuralEngine({ density, speed, interactive, decay });
+    const engine = new NeuralEngine({ density, speed, interactive, decay, spacing });
     engineRef.current = engine;
 
     const resize = () => {
@@ -125,5 +126,5 @@ export const NeuralGrid: React.FC<NeuralGridProps> = ({
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  return <canvas ref={canvasRef} className={cx('w-full h-full absolute inset-0', className)} />;
+  return <canvas ref={canvasRef} className={cx('jk-neural-bg', className)} />;
 };

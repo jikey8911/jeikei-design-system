@@ -17,6 +17,7 @@ export type NeuralEngineOptions = {
   speed?: number; // 0..2 speed multiplier
   interactive?: boolean;
   decay?: number; // energy decay
+  spacing?: number; // grid spacing in px
 };
 
 export type NeuralStateSnapshot = {
@@ -37,6 +38,7 @@ export class NeuralEngine {
     speed: 1,
     interactive: true,
     decay: 0.01,
+    spacing: 80,
   };
   private raf?: number;
   private area = { w: 1200, h: 800 };
@@ -47,18 +49,24 @@ export class NeuralEngine {
   }
 
   private seed() {
-    const count = Math.max(12, Math.floor(80 * this.options.density));
-    this.nodes = Array.from({ length: count }).map(() => ({
-      x: Math.random() * this.area.w,
-      y: Math.random() * this.area.h,
-      vx: (Math.random() - 0.5) * this.options.speed,
-      vy: (Math.random() - 0.5) * this.options.speed,
-      energy: Math.random(),
-    }));
+    const spacing = this.options.spacing;
+    this.nodes = [];
+    for (let x = spacing / 2; x < this.area.w; x += spacing) {
+      for (let y = spacing / 2; y < this.area.h; y += spacing) {
+        this.nodes.push({
+          x: x + (Math.random() - 0.5) * 10,
+          y: y + (Math.random() - 0.5) * 10,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          energy: Math.random() * 0.4,
+        });
+      }
+    }
   }
 
   setSize(width: number, height: number) {
     this.area = { w: width, h: height };
+    this.seed();
   }
 
   setInteractive(value: boolean) {
@@ -98,14 +106,17 @@ export class NeuralEngine {
 
   pulse(point: { x: number; y: number }) {
     this.pulses.push({ x: point.x, y: point.y, life: 1 });
+    const spacing = this.options.spacing;
     this.nodes.forEach((n) => {
       const dx = n.x - point.x;
       const dy = n.y - point.y;
       const dist = Math.hypot(dx, dy);
-      const force = Math.max(0, 1 - dist / 200);
-      n.vx += (dx / (dist + 0.001)) * force * 0.5;
-      n.vy += (dy / (dist + 0.001)) * force * 0.5;
-      n.energy = Math.min(1, n.energy + force);
+      if (dist < spacing * 3) {
+        setTimeout(() => {
+          n.energy = 1;
+          this.pulses.push({ x: n.x, y: n.y, life: 0.8 });
+        }, dist * 0.5);
+      }
     });
   }
 

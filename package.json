@@ -12,6 +12,7 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./dist/style.css": "./dist/jeikei-design-system.css",
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
@@ -23,14 +24,15 @@
     "build": "pnpm run build:lib && pnpm run build:types",
     "build:lib": "vite build",
     "build:types": "tsc -p tsconfig.build.json",
-    "dev:demo": "pnpm --filter demo dev",
-    "build:demo": "pnpm --filter demo build",
+    "dev:demo": "pnpm --filter jeikei-demo dev",
+    "build:demo": "pnpm --filter jeikei-demo build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "clsx": "^2.1.0",
+    "three": "^0.169.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
