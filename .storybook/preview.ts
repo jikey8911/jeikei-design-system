@@ -1,27 +1,5 @@
-import React from 'react';
-import type { Preview } from "@storybook/react";
-import '../styles/neural-theme.css'; // Assuming this exists or will be created
-import '../styles/tokens.css';
+import '../src/styles/tailwind.css';
 
-const preview: Preview = {
-  parameters: {
-    backgrounds: {
-      default: 'neural',
-      values: [
-        {
-          name: 'neural',
-          value: '#05070a',
-        },
-      ],
-    },
-    actions: { argTypesRegex: "^on[A-Z].*" },
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/,
-      },
-    },
-  },
+export const parameters = {
+  controls: { expanded: true },
 };
-
-export default preview;
