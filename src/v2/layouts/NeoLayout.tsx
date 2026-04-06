@@ -1,5 +1,5 @@
 import React from 'react';
-import { NeuralProvider } from '../system/NeuralProvider';
+import { useSystem } from '../system/SystemContext';
 import { NeuralBackground } from '../neural/NeuralBackground';
 import '../styles/globals.css';
 import '../styles/effects.css';

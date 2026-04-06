@@ -4,11 +4,12 @@ export class NeuralEngine implements NeuralEngineAPI {
   private nodes: NeuralNode[] = [];
   private edges: NeuralEdge[] = [];
   private pulses: NeuralPulse[] = [];
+  private adjacency: Map<number, number[]> = new Map();
   private listeners: Set<(state: NeuralState) => void> = new Set();
   
   private width: number;
   private height: number;
-  private density: number = 40; // Pixels between nodes
+  private density: number = 45; // Pixels between nodes
 
   constructor(width: number, height: number) {
     this.width = width;
@@ -20,16 +21,17 @@ export class NeuralEngine implements NeuralEngineAPI {
     this.nodes = [];
     this.edges = [];
     this.pulses = [];
+    this.adjacency.clear();
 
     const cols = Math.ceil(this.width / this.density) + 1;
     const rows = Math.ceil(this.height / this.density) + 1;
 
-    // Create Nodes
+    // 1. Create Nodes with slight organic jitter
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const id = r * cols + c;
-        const x = c * this.density + (Math.random() - 0.5) * 15;
-        const y = r * this.density + (Math.random() - 0.5) * 15;
+        const x = c * this.density + (Math.random() - 0.5) * 20;
+        const y = r * this.density + (Math.random() - 0.5) * 20;
         
         this.nodes.push({
           id,
@@ -37,72 +39,79 @@ export class NeuralEngine implements NeuralEngineAPI {
           velocity: [0, 0, 0],
           energy: 0
         });
+        this.adjacency.set(id, []);
       }
     }
 
-    // Create Edges (Grid Topology)
+    // 2. Create Edges & Build Adjacency List
+    const addEdge = (from: number, to: number) => {
+      const weight = 0.7 + Math.random() * 0.3;
+      this.edges.push({ from, to, weight });
+      this.adjacency.get(from)?.push(to);
+      this.adjacency.get(to)?.push(from);
+    };
+
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const i = r * cols + c;
-        // Right neighbor
-        if (c < cols - 1) {
-          this.edges.push({ from: i, to: i + 1, weight: 0.8 + Math.random() * 0.2 });
-        }
-        // Bottom neighbor
-        if (r < rows - 1) {
-          this.edges.push({ from: i, to: i + cols, weight: 0.8 + Math.random() * 0.2 });
+        // Connect Right
+        if (c < cols - 1) addEdge(i, i + 1);
+        // Connect Bottom
+        if (r < rows - 1) addEdge(i, i + cols);
+        // Diagonal (adds mesh complexity)
+        if (c < cols - 1 && r < rows - 1 && Math.random() > 0.7) {
+          addEdge(i, i + cols + 1);
         }
       }
     }
   }
 
   public update(delta: number) {
-    // 1. Decay Existing Energy
-    this.nodes.forEach(node => {
-      node.energy *= 0.92; // Natural dissipation
-      if (node.energy < 0.001) node.energy = 0;
-    });
-
-    // 2. Process Pulses & Propagation
+    // 1. Process Active Pulses
     const nextPulses: NeuralPulse[] = [];
-    
+    const pulseMap = new Map<number, number>(); // nodeID -> totalIncomingStrength
+
     for (const pulse of this.pulses) {
       const node = this.nodes[pulse.nodeId];
       if (!node) continue;
 
-      // Transfer energy to node
-      node.energy += pulse.strength;
+      // Ignite node
+      node.energy = Math.min(node.energy + pulse.strength, 1.5);
 
-      // Propagate if pulse has life
-      if (pulse.life > 0) {
-        const connections = this.edges.filter(e => e.from === pulse.nodeId || e.to === pulse.nodeId);
-        for (const edge of connections) {
-          const targetId = edge.from === pulse.nodeId ? edge.to : edge.from;
+      // Propagate if pulse has capacity
+      if (pulse.life > 1 && pulse.strength > 0.1) {
+        const neighbors = this.adjacency.get(pulse.nodeId) || [];
+        for (const neighborId of neighbors) {
+          // Spread energy to neighbors with decay
           nextPulses.push({
-            nodeId: targetId,
-            strength: pulse.strength * edge.weight * 0.6,
+            nodeId: neighborId,
+            strength: pulse.strength * 0.65,
             life: pulse.life - 1
           });
         }
       }
     }
 
-    this.pulses = nextPulses;
+    // 2. Node Energy Dissipation & Passive Recovery
+    this.nodes.forEach(node => {
+      node.energy *= 0.94; // Decay
+      if (node.energy < 0.001) node.energy = 0;
+    });
 
-    // 3. Performance Cleanup (Limit active pulses)
-    if (this.pulses.length > 500) {
-      this.pulses = this.pulses.sort((a, b) => b.strength - a.strength).slice(0, 500);
-    }
+    // 3. Swap Pulses & Apply Performance Limit
+    this.pulses = nextPulses.length > 400 
+      ? nextPulses.sort((a, b) => b.strength - a.strength).slice(0, 400)
+      : nextPulses;
 
     this.notify();
   }
 
   public emitPulse(x: number, y: number, intensity: number = 1.0) {
-    // Find closest node to origin
+    // Find closest node (Spatial hash would be better for high density, but brute force is ok for ~1k nodes)
     let closestId = -1;
     let minDist = Infinity;
 
-    this.nodes.forEach(node => {
+    for (const node of this.nodes) {
       const dx = node.position[0] - x;
       const dy = node.position[1] - y;
       const d = dx * dx + dy * dy;
@@ -110,13 +119,13 @@ export class NeuralEngine implements NeuralEngineAPI {
         minDist = d;
         closestId = node.id;
       }
-    });
+    }
 
-    if (closestId !== -1 && minDist < 40000) { // dentro de 200px aprox
+    if (closestId !== -1 && minDist < 60000) { // approx 245px radius
       this.pulses.push({
         nodeId: closestId,
         strength: intensity,
-        life: 5 // Propagation depth
+        life: 6 // propagation steps
       });
     }
   }
@@ -151,5 +160,6 @@ export class NeuralEngine implements NeuralEngineAPI {
     this.nodes = [];
     this.edges = [];
     this.pulses = [];
+    this.adjacency.clear();
   }
 }

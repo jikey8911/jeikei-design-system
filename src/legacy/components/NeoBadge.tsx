@@ -6,8 +6,11 @@ type Props = {
   glow?: boolean;
 } & React.HTMLAttributes<HTMLSpanElement>;
 
-console.warn('JeiKei Legacy: NeoBadge is deprecated. Use V2 components instead.');
 export const NeoBadge: React.FC<Props> = ({ variant = 'accent', glow, className, children, ...rest }) => {
+  React.useEffect(() => {
+    console.warn('JeiKei Legacy: NeoBadge is deprecated. Use V2 components instead.');
+  }, []);
+
   const variantMap = {
     accent: 'bg-neo-accent/15 text-neo-accent border border-neo-accent/40',
     glass: 'bg-white/5 text-neo-text border border-white/10',

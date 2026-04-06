@@ -15,15 +15,18 @@ export const NeuralBackground: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current || !engine) return;
 
-    // Renderer Setup
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // 1. Renderer Setup (Glass-friendly alpha)
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      alpha: true,
+      powerPreference: "high-performance"
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // THREE Scene
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(
       -window.innerWidth / 2, 
@@ -34,7 +37,7 @@ export const NeuralBackground: React.FC = () => {
     );
     camera.position.z = 10;
 
-    // Nodes Material
+    // 2. Nodes Material (Custom Shader)
     const pointsGeo = new THREE.BufferGeometry();
     const pointsMat = new THREE.ShaderMaterial({
       vertexShader,
@@ -45,40 +48,40 @@ export const NeuralBackground: React.FC = () => {
       uniforms: {
         uTime: { value: 0 },
         uAccent: { value: new THREE.Color(theme === 'mission' ? 0xf2b93b : 0x34d8ff) },
-        uGlowIntensity: { value: 1.0 },
-        uSize: { value: 6.0 }
+        uGlowIntensity: { value: 1.2 },
+        uSize: { value: 5.5 }
       }
     });
 
     const points = new THREE.Points(pointsGeo, pointsMat);
     scene.add(points);
 
-    // Edges Material
+    // 3. Edges Material (Base Line)
     const edgesGeo = new THREE.BufferGeometry();
     const edgesMat = new THREE.LineBasicMaterial({
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       color: theme === 'mission' ? 0xf2b93b : 0x34d8ff,
-      opacity: 0.15
+      opacity: 0.12
     });
 
     const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
     scene.add(edgesMesh);
 
-    // Performance tracking
+    // 4. Update Loop Synchronization
     let frameCount = 0;
     let lastFpsUpdate = performance.now();
 
-    // Subscribe to Engine
     const unsubscribe = engine.subscribe((state) => {
       const { nodes, edges } = state;
       
-      // Update Nodes
+      // Update Node Attributes
       const posArr = new Float32Array(nodes.length * 3);
       const enArr = new Float32Array(nodes.length);
       
-      nodes.forEach((n: any, i: number) => {
+      nodes.forEach((n, i) => {
+        // Center the grid
         posArr[i * 3] = n.position[0] - window.innerWidth / 2;
         posArr[i * 3 + 1] = n.position[1] - window.innerHeight / 2;
         posArr[i * 3 + 2] = n.position[2];
@@ -88,18 +91,19 @@ export const NeuralBackground: React.FC = () => {
       pointsGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
       pointsGeo.setAttribute('aEnergy', new THREE.BufferAttribute(enArr, 1));
       
-      // Update Edges
+      // Update Edge Attributes
       const edgePosArr = new Float32Array(edges.length * 6);
       edges.forEach((edge, i) => {
         const nodeA = nodes[edge.from];
         const nodeB = nodes[edge.to];
         if (nodeA && nodeB) {
-          edgePosArr[i * 6] = nodeA.position[0] - window.innerWidth / 2;
-          edgePosArr[i * 6 + 1] = nodeA.position[1] - window.innerHeight / 2;
-          edgePosArr[i * 6 + 2] = nodeA.position[2];
-          edgePosArr[i * 6 + 3] = nodeB.position[0] - window.innerWidth / 2;
-          edgePosArr[i * 6 + 4] = nodeB.position[1] - window.innerHeight / 2;
-          edgePosArr[i * 6 + 5] = nodeB.position[2];
+          const idx = i * 6;
+          edgePosArr[idx] = nodeA.position[0] - window.innerWidth / 2;
+          edgePosArr[idx + 1] = nodeA.position[1] - window.innerHeight / 2;
+          edgePosArr[idx + 2] = nodeA.position[2];
+          edgePosArr[idx + 3] = nodeB.position[0] - window.innerWidth / 2;
+          edgePosArr[idx + 4] = nodeB.position[1] - window.innerHeight / 2;
+          edgePosArr[idx + 5] = nodeB.position[2];
         }
       });
       edgesGeo.setAttribute('position', new THREE.BufferAttribute(edgePosArr, 3));
@@ -125,17 +129,11 @@ export const NeuralBackground: React.FC = () => {
       camera.updateProjectionMatrix();
     };
 
-    const handleClick = (e: MouseEvent) => {
-      engine.emitPulse(e.clientX, e.clientY, 1.2);
-    };
-
     window.addEventListener('resize', handleResize);
-    window.addEventListener('click', handleClick);
 
     return () => {
       unsubscribe();
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('click', handleClick);
       renderer.dispose();
       if (containerRef.current?.contains(renderer.domElement)) {
         containerRef.current.removeChild(renderer.domElement);
@@ -144,7 +142,10 @@ export const NeuralBackground: React.FC = () => {
   }, [engine, theme]);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 -z-10 bg-black pointer-events-none">
+    <div ref={containerRef} className="fixed inset-0 -z-10 bg-[#020202] pointer-events-none">
+       {/* Background Noise/Texture */}
+       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+       
        <div className="absolute top-4 right-6 font-mono text-[9px] tracking-widest text-neo-accent opacity-30 select-none">
           SYSTEM_LOAD: {fps} FPS // {theme.toUpperCase()}_MODE
        </div>

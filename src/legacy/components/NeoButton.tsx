@@ -7,8 +7,10 @@ export type NeoButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
 };
 
-console.warn('JeiKei Legacy: NeoButton is deprecated. Use V2 components instead.');
 export const NeoButton: React.FC<NeoButtonProps> = ({ children, variant = 'primary', className, ...rest }) => {
+  React.useEffect(() => {
+    console.warn('JeiKei Legacy: NeoButton is deprecated. Use V2 components instead.');
+  }, []);
   const base = 'px-6 py-3 rounded-neo-md transition-all duration-300 font-bold uppercase tracking-widest text-[10px]';
   const variants: Record<Variant, string> = {
     primary:

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSystem } from '../system/SystemContext';
 import { cx } from '../../utils/cx';
 
 export interface NeoInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,8 +11,28 @@ export const NeoInput: React.FC<NeoInputProps> = ({
   label, 
   glow = true, 
   className, 
+  onFocus,
+  onChange,
   ...props 
 }) => {
+  const { engine } = useSystem();
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (engine) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      engine.emitPulse(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.8);
+    }
+    if (onFocus) onFocus(e);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (engine) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      engine.emitPulse(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.4);
+    }
+    if (onChange) onChange(e);
+  };
+
   return (
     <div className="jk-input-v2 flex flex-col space-y-3 group w-full">
       {label && (
@@ -21,6 +42,8 @@ export const NeoInput: React.FC<NeoInputProps> = ({
       )}
       <div className="relative">
         <input
+          onFocus={handleFocus}
+          onChange={handleChange}
           className={cx(
             'w-full jk-glass bg-white/5 border-white/10 rounded-[var(--neo-radius)] px-5 py-4 text-white text-sm outline-none transition-all duration-300',
             'placeholder:text-white/20',

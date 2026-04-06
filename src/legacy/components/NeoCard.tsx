@@ -13,7 +13,6 @@ type Props = {
   glass?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-console.warn('JeiKei Legacy: NeoCard is deprecated. Use V2 components instead.');
 export const NeoCard: React.FC<Props> = ({ 
   title, 
   value, 
@@ -25,6 +24,10 @@ export const NeoCard: React.FC<Props> = ({
   children, 
   ...rest 
 }) => {
+  React.useEffect(() => {
+    console.warn('JeiKei Legacy: NeoCard is deprecated. Use V2 components instead.');
+  }, []);
+
   const glowClass = variant === 'cyan' ? 'shadow-neon-cyan/20 ring-1 ring-neo-accent/20' : 'shadow-neon-magenta/20 ring-1 ring-neo-magenta/20';
   const textClass = variant === 'cyan' ? 'text-neo-accent' : 'text-neo-magenta';
 
