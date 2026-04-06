@@ -1,4 +1,5 @@
 import './styles/tailwind.css';
+import './styles/globals.css';
 
 // Tokens
 export * from './tokens/colors';

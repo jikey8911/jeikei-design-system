@@ -14,11 +14,11 @@ export const neuralPresets = {
     spacing: 80,
   },
   jarvis: {
-    nodeDensity: 0.75,
-    glowIntensity: 1.4,
-    pulseSpeed: 1.5,
-    interactionStrength: 1.0,
-    spacing: 70,
+    nodeDensity: 0.8,
+    glowIntensity: 1.6,
+    pulseSpeed: 1.6,
+    interactionStrength: 1.1,
+    spacing: 68,
   },
 };
 

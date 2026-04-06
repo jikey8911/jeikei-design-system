@@ -1,166 +1,61 @@
-import {
-  NeoBadge,
-  NeoButton,
-  NeoCard,
-  NeoGrid,
-  NeoInput,
-  NeoModal,
-  NeoPanel,
-  NeoTabs,
-  NeoTable,
-  NeoToast,
-  NeuralGrid,
-  useHover,
-  useKeyboardPulse,
-} from 'jeikei-design-system';
 import React from 'react';
+import { NeoButton, NeoCard, NeoGrid, NeoInput, NeuralGrid } from 'jeikei-design-system';
 
-const tableData = [
-  { id: 'alpha', status: 'Online', load: '42%', latency: '18ms' },
-  { id: 'beta', status: 'Degraded', load: '73%', latency: '32ms' },
-  { id: 'gamma', status: 'Offline', load: '0%', latency: '—' },
-];
-
-function App() {
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [pulseKey, setPulseKey] = React.useState('');
-  const { hovered, bind } = useHover();
-
-  useKeyboardPulse({ onPulse: (k) => setPulseKey(k) });
-
-  const tabs = [
-    { id: 'components', label: 'Components', content: <ComponentShowcase onOpenModal={() => setModalOpen(true)} /> },
-    { id: 'dashboard', label: 'Dashboard', content: <DashboardView /> },
-  ];
-
+export default function App() {
   return (
-    <div className="min-h-screen bg-neo-bg text-neo-text relative overflow-hidden">
-      <NeuralGrid className="pointer-events-none" preset="mission-control" />
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-10 space-y-8">
-        <header className="flex items-center justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-neo-muted">Neural UI // JeiKei</p>
-            <h1 className="text-4xl font-black tracking-tight">Design System Demo</h1>
-          </div>
-          <NeoBadge variant="accent" glow>
-            Vite 7 + Tailwind
-          </NeoBadge>
+    <div className="min-h-screen relative overflow-hidden text-[#dceeff]">
+      <NeuralGrid />
+
+      <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-10">
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl md:text-4xl font-black tracking-[0.35em] text-cyan-200">JEIKEI</h1>
+          <p className="text-sm tracking-[0.25em] text-cyan-100/80">DESIGN SYSTEM</p>
         </header>
 
-        <NeoTabs tabs={tabs} defaultValue="components" />
+        <NeoGrid columns={{ base: 1, md: 2 }} gap="md" className="items-center">
+          <NeoCard glass glow>
+            <h3 className="text-lg font-semibold text-white mb-4">NeoButton</h3>
+            <div className="flex flex-wrap gap-3">
+              <NeoButton>Primary</NeoButton>
+              <NeoButton variant="secondary">Secondary</NeoButton>
+              <NeoButton variant="outline">Outline</NeoButton>
+            </div>
+          </NeoCard>
 
-        <div className="flex items-center gap-3" {...bind}>
-          <NeoToast
-            message="Keyboard Pulse Listener"
-            description={`Last key: ${pulseKey || '—'} | Hover: ${hovered ? 'yes' : 'no'}`}
-            variant="info"
-          />
+          <NeoCard glass glow>
+            <h3 className="text-lg font-semibold text-white mb-4">NeoInput</h3>
+            <NeoInput placeholder="Type here..." />
+          </NeoCard>
+        </NeoGrid>
+
+        <div className="flex justify-center">
+          <NeoButton className="px-10 text-lg" glow>
+            NeoButton
+          </NeoButton>
         </div>
-      </div>
 
-      <NeoModal
-        open={modalOpen}
-        title="Neural Modal"
-        onClose={() => setModalOpen(false)}
-        footer={
-          <>
-            <NeoButton variant="ghost" onClick={() => setModalOpen(false)}>
-              Cancel
-            </NeoButton>
-            <NeoButton glow onClick={() => setModalOpen(false)}>
-              Confirm
-            </NeoButton>
-          </>
-        }
-      >
-        This modal rides on top of the neural grid. Keyboard pulses will ripple through the system.
-      </NeoModal>
+        <NeoGrid columns={{ base: 1, md: 3 }} gap="md">
+          <NeoCard title="NeoCard" value="1,250" glass glow>
+            <p className="text-sm text-gray-300">Users Online</p>
+            <p className="text-3xl text-cyan-300 mt-1">1,250</p>
+          </NeoCard>
+          <NeoCard title="NeoCard" value="$32,400" glass glow>
+            <p className="text-sm text-gray-300">Revenue</p>
+            <p className="text-3xl text-cyan-300 mt-1">$32,400</p>
+          </NeoCard>
+          <NeoCard title="NeoCard" value="62%" glass glow>
+            <p className="text-sm text-gray-300">CPU Usage</p>
+            <p className="text-3xl text-cyan-300 mt-1">62%</p>
+          </NeoCard>
+        </NeoGrid>
+
+        <NeoCard glass glow>
+          <h3 className="text-lg font-semibold text-white mb-2">Neural Grid Background</h3>
+          <div className="h-56 relative rounded-2xl overflow-hidden">
+            <NeuralGrid />
+          </div>
+        </NeoCard>
+      </main>
     </div>
   );
 }
-
-const ComponentShowcase: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
-  return (
-    <NeoGrid gap="lg" columns={{ base: 1, md: 2 }}>
-      <NeoCard title="Buttons" description="Variants + glow + sizes">
-        <div className="flex flex-wrap gap-3">
-          <NeoButton glow>Primary</NeoButton>
-          <NeoButton variant="secondary">Secondary</NeoButton>
-          <NeoButton variant="outline">Outline</NeoButton>
-          <NeoButton variant="ghost">Ghost</NeoButton>
-          <NeoButton variant="danger">Danger</NeoButton>
-        </div>
-      </NeoCard>
-
-      <NeoCard title="Inputs" description="With helper and error">
-        <div className="space-y-3">
-          <NeoInput label="Callsign" placeholder="AR-42" helperText="Neural authenticated" />
-          <NeoInput label="Access Key" type="password" error="Key mismatch" />
-        </div>
-      </NeoCard>
-
-      <NeoCard title="Badges & Toast" description="Status chips">
-        <div className="flex flex-wrap gap-2">
-          <NeoBadge variant="accent" glow>
-            Active
-          </NeoBadge>
-          <NeoBadge variant="success">Stable</NeoBadge>
-          <NeoBadge variant="warning">Warning</NeoBadge>
-          <NeoBadge variant="danger">Critical</NeoBadge>
-        </div>
-      </NeoCard>
-
-      <NeoCard title="Modal" description="Glass + glow" footer={<NeoButton onClick={onOpenModal}>Open Modal</NeoButton>}>
-        Trigger a modal with neon styling and keyboard traps.
-      </NeoCard>
-    </NeoGrid>
-  );
-};
-
-const DashboardView = () => {
-  return (
-    <div className="space-y-6">
-      <NeoPanel
-        title="Neural Operations"
-        actions={
-          <>
-            <NeoButton size="sm" variant="outline">
-              Calibrate
-            </NeoButton>
-            <NeoButton size="sm" glow>
-              Pulse
-            </NeoButton>
-          </>
-        }
-      >
-        <NeoGrid columns={{ base: 1, md: 3 }} gap="md">
-          <StatCard label="Active Nodes" value="128" delta="+6" />
-          <StatCard label="Signal Coherence" value="93%" delta="+2.1%" />
-          <StatCard label="Latency" value="14ms" delta="-1.2ms" />
-        </NeoGrid>
-      </NeoPanel>
-
-      <NeoPanel title="Transmission Log">
-        <NeoTable
-          columns={[
-            { key: 'id', header: 'Node' },
-            { key: 'status', header: 'Status' },
-            { key: 'load', header: 'Load', align: 'right' },
-            { key: 'latency', header: 'Latency', align: 'right' },
-          ]}
-          data={tableData}
-        />
-      </NeoPanel>
-    </div>
-  );
-};
-
-const StatCard = ({ label, value, delta }: { label: string; value: string; delta: string }) => (
-  <div className="glass-surface jk-card border border-white/5 rounded-neo-lg p-5">
-    <p className="text-sm text-neo-muted uppercase tracking-[0.2em]">{label}</p>
-    <p className="text-3xl font-black mt-2">{value}</p>
-    <p className="text-xs text-neo-accent mt-1">Δ {delta}</p>
-  </div>
-);
-
-export default App;

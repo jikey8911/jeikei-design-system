@@ -6,7 +6,7 @@ import { NeuralEngine3D } from './neural-engine';
 import { getPreset } from './presets';
 
 export const NeuralGrid = ({
-  preset = 'mission-control',
+  preset = 'jarvis',
   followMouse = true,
   reactToTyping = true,
   reactToClick = true,

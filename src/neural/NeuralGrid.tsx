@@ -1,130 +1,72 @@
-import React, { useEffect, useRef } from 'react';
-import { NeuralEngine, NeuralEngineOptions, NeuralStateSnapshot } from './NeuralEngine';
-import { cx } from '../utils/cx';
+import { useEffect, useRef } from 'react';
 
-export type NeuralGridProps = NeuralEngineOptions & {
-  interactive?: boolean;
-  className?: string;
-  density?: number;
-  speed?: number;
-};
-
-export const NeuralGrid: React.FC<NeuralGridProps> = ({
-  interactive = true,
-  density = 0.6,
-  speed = 1,
-  decay = 0.01,
-  spacing = 80,
-  className,
-}) => {
+export const NeuralGrid = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineRef = useRef<NeuralEngine>();
-  const snapshotRef = useRef<NeuralStateSnapshot>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const engine = new NeuralEngine({ density, speed, interactive, decay, spacing });
-    engineRef.current = engine;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     const resize = () => {
-      const { clientWidth, clientHeight } = canvas.parentElement ?? { clientWidth: 1200, clientHeight: 800 };
-      canvas.width = clientWidth;
-      canvas.height = clientHeight;
-      engine.setSize(clientWidth, clientHeight);
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
     resize();
 
-    const unsub = engine.subscribe((snap) => {
-      snapshotRef.current = snap;
-    });
-    engine.start();
+    let points = Array.from({ length: 180 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+    }));
 
-    const render = () => {
-      const snap = snapshotRef.current;
-      if (canvas && snap) {
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#05070a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'rgba(32, 246, 184, 0.5)';
-        ctx.lineWidth = 1;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'lighter';
 
-        // connections
-        for (let i = 0; i < snap.nodes.length; i++) {
-          for (let j = i + 1; j < snap.nodes.length; j++) {
-            const a = snap.nodes[i];
-            const b = snap.nodes[j];
-            const dist = Math.hypot(a.x - b.x, a.y - b.y);
-            if (dist < 220) {
-              ctx.globalAlpha = 1 - dist / 220;
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.stroke();
-            }
+      // connections
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const a = points[i];
+          const b = points[j];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist < 190) {
+            const alpha = 1 - dist / 190;
+            ctx.strokeStyle = `rgba(0, 200, 255, ${alpha * 0.25})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
           }
         }
-
-        // nodes
-        snap.nodes.forEach((n) => {
-          const glow = Math.min(1, n.energy + 0.2);
-          const radius = 3 + n.energy * 3;
-          const gradient = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius * 4);
-          gradient.addColorStop(0, `rgba(0,255,156,${glow})`);
-          gradient.addColorStop(1, 'rgba(0,255,156,0)');
-          ctx.fillStyle = gradient;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, radius * 2.5, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = '#00ff9c';
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
-          ctx.fill();
-        });
-
-        // pulses
-        snap.pulses.forEach((p) => {
-          ctx.strokeStyle = `rgba(0,255,156,${p.life})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, (1 - p.life) * 200, 0, Math.PI * 2);
-          ctx.stroke();
-        });
       }
-      requestAnimationFrame(render);
+
+      // stars
+      points.forEach((p) => {
+        ctx.beginPath();
+        const r = 1.2 + Math.random() * 0.9;
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 7);
+        grd.addColorStop(0, 'rgba(0,255,255,0.8)');
+        grd.addColorStop(1, 'rgba(0,255,255,0)');
+        ctx.fillStyle = grd;
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      });
+
+      requestAnimationFrame(draw);
     };
-    requestAnimationFrame(render);
 
     window.addEventListener('resize', resize);
-    return () => {
-      window.removeEventListener('resize', resize);
-      unsub();
-      engine.stop();
-    };
-  }, [density, speed, interactive, decay]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const handler = (e: MouseEvent) => {
-      if (!interactive) return;
-      const rect = canvas.getBoundingClientRect();
-      engineRef.current?.pulse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-    canvas.addEventListener('click', handler);
-    return () => canvas.removeEventListener('click', handler);
-  }, [interactive]);
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === ' ') engineRef.current?.disperse();
-      if (e.key === 'Enter') engineRef.current?.pulse({ x: Math.random() * 600, y: Math.random() * 400 });
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    draw();
+    return () => window.removeEventListener('resize', resize);
   }, []);
 
-  return <canvas ref={canvasRef} className={cx('jk-neural-bg', className)} />;
+  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 opacity-30 pointer-events-none" />;
 };
