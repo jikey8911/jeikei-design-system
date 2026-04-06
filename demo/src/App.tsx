@@ -1,168 +1,179 @@
 import React, { useState, useEffect } from 'react';
-import { V2, cx } from 'jeikei-design-system';
+import { V2 } from 'jeikei-design-system';
 
-const { NeoLayout, NeoButton, NeoCard, useSystem } = V2;
+const { NeoLayout, NeoButton, NeoCard, NeuralBackground, useSystem } = V2;
 
 const ThemeToggler = () => {
-  const { theme, setTheme } = useSystem();
-  return (
-    <NeoButton 
-      variant="secondary" 
-      size="sm" 
-      onClick={() => setTheme(theme === 'mission' ? 'nebula' : 'mission')}
-    >
-      MODE: {theme.toUpperCase()}
-    </NeoButton>
-  );
+   const { theme, setTheme } = useSystem();
+   return (
+      <NeoButton
+         variant="secondary"
+         size="sm"
+         onClick={() => setTheme(theme === 'mission' ? 'nebula' : 'mission')}
+      >
+         MODE: {theme.toUpperCase()}
+      </NeoButton>
+   );
 };
 
 const SystemHUD = () => {
-  const { engine } = useSystem();
-  const [metrics, setMetrics] = useState({ energy: 0, pulses: 0 });
+   const { engine } = useSystem();
+   const [metrics, setMetrics] = useState({ energy: 0, pulses: 0 });
 
-  useEffect(() => {
-    if (!engine) return;
-    return engine.subscribe((state) => {
-      setMetrics({
-        energy: state.totalEnergy,
-        pulses: state.pulses.length
+   useEffect(() => {
+      if (!engine) return;
+      return engine.subscribe((state) => {
+         setMetrics({
+            energy: state.totalEnergy,
+            pulses: state.pulses.length
+         });
       });
-    });
-  }, [engine]);
+   }, [engine]);
 
-  return (
-    <div className="flex gap-8 items-center">
-       <div className="flex flex-col items-end">
-          <span className="jk-data-label text-[7px] opacity-40">CORE_ENERGY_FLUX</span>
-          <span className="text-neo-accent font-mono text-[10px]">{(metrics.energy * 10).toFixed(4)} EV</span>
-       </div>
-       <div className="flex flex-col items-end">
-          <span className="jk-data-label text-[7px] opacity-40">ACTIVE_SYNAPSES</span>
-          <span className="text-neo-magenta font-mono text-[10px]">{metrics.pulses}</span>
-       </div>
-    </div>
-  );
+   return (
+      <div className="flex gap-10 items-center">
+         <div className="flex flex-col items-end">
+            <span className="jk-data-label opacity-40">CORE_ENERGY</span>
+            <span className="text-neo-accent font-mono text-xs">
+               {(metrics.energy * 10).toFixed(3)} EV
+            </span>
+         </div>
+         <div className="flex flex-col items-end">
+            <span className="jk-data-label opacity-40">ACTIVE_PULSES</span>
+            <span className="text-neo-magenta font-mono text-xs">
+               {metrics.pulses}
+            </span>
+         </div>
+      </div>
+   );
 };
 
 function App() {
-  return (
-    <NeoLayout>
-      <div className="space-y-12">
-        {/* HERO SECTION */}
-        <div className="flex flex-col items-center text-center space-y-6 py-12">
-          <div className="flex items-center gap-4 mb-4">
-             <div className="h-[1px] w-12 bg-neo-accent/30" />
-             <div className="jk-hud-heading text-neo-accent opacity-50">SYSTEM_CORE_V2_PRO</div>
-             <div className="h-[1px] w-12 bg-neo-accent/30" />
-          </div>
-          
-          <h1 className="text-8xl font-black tracking-tighter uppercase drop-shadow-[0_0_40px_var(--neo-glow)]">
-            Living Interface
-          </h1>
-          
-          <p className="text-neo-muted max-w-2xl jk-data-label text-xs tracking-[0.2em] leading-relaxed opacity-60">
-            Advanced Graph-Based Neural Propagation Engine. 
-            <br/> Real-time energy transfer via weight-distributed edge algorithms.
-          </p>
+   const { engine } = useSystem();
 
-          <div className="flex gap-4 pt-4">
-             <NeoButton size="lg" onClick={(e) => {
-                // Global pulse test
-                console.log('INIT_PROTO');
-             }}>
-               Initialize Protocol
-             </NeoButton>
-             <ThemeToggler />
-          </div>
-          
-          <div className="pt-8">
-             <SystemHUD />
-          </div>
-        </div>
+   const emitCenterPulse = (e: React.MouseEvent<HTMLButtonElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      engine?.emitPulse(
+         rect.left + rect.width / 2,
+         rect.top + rect.height / 2
+      );
+   };
 
-        {/* METRICS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <NeoCard title="Node Density" value="1,402" trend={{ value: 'OPTIMAL', direction: 'neutral' }} />
-          <NeoCard title="Sync Latency" value="0.4ms" trend={{ value: 'STABLE', direction: 'up' }} />
-          <NeoCard title="Mesh Stability" value="99.9%" glow={false} />
-          <NeoCard title="Uptime" value="∞" trend={{ value: 'LIVE', direction: 'neutral' }} />
-        </div>
+   return (
+      <NeoLayout>
+         {/* 🔥 BACKGROUND GLOBAL */}
+         <div className="fixed inset-0 -z-10">
+            <NeuralBackground />
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+         </div>
 
-        {/* MAIN INTERFACE BLOCKS */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-           <NeoCard title="Neural Parameters" className="lg:col-span-1">
-              <div className="space-y-6 py-2">
-                 <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                       <span className="jk-data-label text-[8px]">Propagation Depth</span>
-                       <span className="jk-data-label text-neo-accent">5 Hops</span>
-                    </div>
-                    <div className="h-[2px] w-full bg-white/5">
-                       <div className="h-full w-[100%] bg-neo-accent shadow-neon-primary" />
-                    </div>
-                 </div>
+         <div className="space-y-16 relative z-10">
 
-                 <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                       <span className="jk-data-label text-[8px]">Energy Decay Rate</span>
-                       <span className="jk-data-label text-neo-magenta">0.08 / step</span>
-                    </div>
-                    <div className="h-[2px] w-full bg-white/5">
-                       <div className="h-full w-[40%] bg-neo-magenta shadow-neon-magenta" />
-                    </div>
-                 </div>
+            {/* HERO */}
+            <div className="flex flex-col items-center text-center space-y-6 py-16">
+               <h1 className="text-7xl font-black tracking-[0.3em] text-neo-accent drop-shadow-[0_0_40px_var(--neo-glow)]">
+                  JEIKEI
+               </h1>
 
-                 <div className="pt-4 grid grid-cols-2 gap-2">
-                    <NeoButton variant="outline" size="sm">Purge Pulses</NeoButton>
-                    <NeoButton variant="outline" size="sm">Recalibrate</NeoButton>
-                 </div>
-              </div>
-           </NeoCard>
+               <p className="jk-data-label text-neo-muted max-w-xl opacity-60">
+                  Living Neural Interface · Real-time Graph Propagation System
+               </p>
 
-           <NeoCard title="Real-time Node Event Stream" className="lg:col-span-2">
-              <div className="space-y-1 font-mono text-[9px] max-h-[300px] overflow-hidden opacity-80">
-                 {[
-                   'NODE_AUTH_SUCCESS :: [0x4F2A]',
-                   'INITIALIZING_GRAPH_PHYSICS_MODEL',
-                   'PROPAGATION_PULSE_GEN_0_ACTIVE',
-                   'SYNCING_DASHBOARD_METRICS_BUS',
-                   'DECAY_ALGORITHM_THRESHOLD_MET',
-                   'CORE_V2_READY_FOR_CONSUMPTION',
-                   'NEO_BUTTON_CLICK_EMITTING_SYNC_PULSE',
-                   'MAPPING_BOUNDING_CLIENT_RECT_SUCCESS',
-                   'THEME_SYNC_COMPLETE'
-                 ].map((log, i) => (
-                    <div key={i} className="flex gap-4 p-2 border-b border-white/5 hover:bg-white/5 transition-colors">
-                       <span className="text-neo-accent/40">[{new Date().toLocaleTimeString()}]</span>
-                       <span className="tracking-widest uppercase">{log}</span>
-                    </div>
-                 ))}
-                 <div className="pt-4 flex justify-between items-center px-2">
-                    <span className="jk-data-label opacity-20 italic">AWAITING_USER_INPUT...</span>
-                    <NeoButton variant="ghost" size="sm">System Logs</NeoButton>
-                 </div>
-              </div>
-           </NeoCard>
-        </div>
+               <div className="flex gap-4 pt-6">
+                  <NeoButton size="lg" onClick={emitCenterPulse}>
+                     Initialize System
+                  </NeoButton>
+                  <ThemeToggler />
+               </div>
 
-        {/* INTERACTIVE AREA */}
-        <div className="p-16 jk-glass rounded-[var(--neo-radius)] border border-white/5 text-center space-y-8 relative group overflow-hidden">
-           <div className="absolute inset-0 bg-neo-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-           <div className="relative z-10 space-y-6">
-              <h2 className="jk-hud-heading text-4xl">Interaction Stress Test</h2>
-              <p className="text-neo-muted max-w-xl mx-auto jk-data-label text-[10px] tracking-[0.3em] opacity-40">
-                Trigger high-order propagation waves by clicking UI elements. 
-                Energy will flow through the graph edges based on the Pro engine logic.
-              </p>
-              <div className="flex justify-center gap-8 pt-4">
-                 <NeoButton variant="primary" size="lg">Send Pulse Wave</NeoButton>
-                 <NeoButton variant="outline" size="lg">Force Mesh Sync</NeoButton>
-              </div>
-           </div>
-        </div>
-      </div>
-    </NeoLayout>
-  );
+               <SystemHUD />
+            </div>
+
+            {/* METRICS */}
+            <div className="grid md:grid-cols-4 gap-6">
+               <NeoCard title="Node Density" value="1,402" />
+               <NeoCard title="Latency" value="0.4ms" />
+               <NeoCard title="Stability" value="99.9%" />
+               <NeoCard title="Uptime" value="∞" />
+            </div>
+
+            {/* MAIN */}
+            <div className="grid lg:grid-cols-3 gap-8">
+
+               <NeoCard title="Neural Parameters">
+                  <div className="space-y-6">
+
+                     <div>
+                        <div className="flex justify-between text-xs">
+                           <span>Propagation</span>
+                           <span className="text-neo-accent">5 Hops</span>
+                        </div>
+                        <div className="h-[2px] bg-white/10 mt-2">
+                           <div className="h-full w-full bg-neo-accent shadow-neon-primary" />
+                        </div>
+                     </div>
+
+                     <div>
+                        <div className="flex justify-between text-xs">
+                           <span>Decay</span>
+                           <span className="text-neo-magenta">0.08</span>
+                        </div>
+                        <div className="h-[2px] bg-white/10 mt-2">
+                           <div className="h-full w-[40%] bg-neo-magenta shadow-neon-magenta" />
+                        </div>
+                     </div>
+
+                     <div className="grid grid-cols-2 gap-3 pt-4">
+                        <NeoButton variant="outline" onClick={emitCenterPulse}>
+                           Purge
+                        </NeoButton>
+                        <NeoButton variant="outline" onClick={emitCenterPulse}>
+                           Sync
+                        </NeoButton>
+                     </div>
+
+                  </div>
+               </NeoCard>
+
+               <NeoCard title="Event Stream" className="lg:col-span-2">
+                  <div className="font-mono text-[10px] space-y-1 opacity-80">
+                     {Array.from({ length: 8 }).map((_, i) => (
+                        <div key={i} className="border-b border-white/5 py-2 hover:bg-white/5 transition">
+                           [{new Date().toLocaleTimeString()}] SIGNAL_PROPAGATED_NODE_{i}
+                        </div>
+                     ))}
+                  </div>
+               </NeoCard>
+            </div>
+
+            {/* INTERACTION ZONE */}
+            <div className="jk-glass rounded-[var(--neo-radius)] border border-white/10 p-16 text-center relative overflow-hidden group">
+
+               {/* glow hover */}
+               <div className="absolute inset-0 bg-neo-accent/[0.03] opacity-0 group-hover:opacity-100 transition duration-1000" />
+
+               <div className="relative z-10 space-y-6">
+                  <h2 className="text-3xl jk-hud-heading">Neural Interaction</h2>
+
+                  <p className="jk-data-label opacity-40 max-w-md mx-auto">
+                     Trigger propagation waves across the neural mesh.
+                  </p>
+
+                  <div className="flex justify-center gap-6 pt-4">
+                     <NeoButton size="lg" onClick={emitCenterPulse}>
+                        Pulse Wave
+                     </NeoButton>
+
+                     <NeoButton variant="outline" size="lg" onClick={emitCenterPulse}>
+                        Force Sync
+                     </NeoButton>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </NeoLayout>
+   );
 }
 
 export default App;
