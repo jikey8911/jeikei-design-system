@@ -1,139 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .neo-glass {
-    background: var(--neo-glass, rgba(12, 16, 24, 0.65));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+@layer base {
+  html, body {
+    @apply font-outfit bg-neo-bg text-neo-text;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
   }
 
-  .neo-border {
-    border-color: rgba(255, 255, 255, 0.08);
+  body {
+    background: radial-gradient(circle at 10% 10%, rgba(0, 255, 255, 0.1), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(255, 0, 255, 0.08), transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(0, 100, 255, 0.08), transparent 50%),
+      #010307;
   }
-}
-
-:root {
-  --neo-bg: #04060b;
-  --neo-glass: rgba(12, 16, 24, 0.65);
-  --neo-border: rgba(255, 255, 255, 0.08);
-  --neo-accent: #20f6b8;
-  --neo-accent-strong: #00ff9c;
-  --neo-magenta: #ff4bd8;
-  --neo-cyan: #34d8ff;
-  --neo-amber: #f2b93b;
-  --neo-text: #e5f0ff;
-  color: var(--neo-text);
-  background: var(--neo-bg);
-}
-
-body {
-  background-color: var(--neo-bg);
-  color: var(--neo-text);
 }
 
 @layer components {
   .glass-surface {
-    @apply neo-glass rounded-neo-lg shadow-panel border neo-border;
+    @apply backdrop-blur-20 bg-neo-glass border border-white/10 rounded-neo-lg shadow-panel;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
   }
 
-  .glow-ring {
-    box-shadow: 0 0 30px rgba(0, 255, 156, 0.35);
+  .scanlines-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.03; /* Ultra subtle 3% */
   }
 }
 
-.jk-btn-glow {
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.35), 0 0 28px rgba(0, 170, 255, 0.25);
-  border-color: rgba(0, 255, 255, 0.4) !important;
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+  
+  .text-glow-magenta {
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.2);
+  }
 }
 
-.jk-input {
-  background: rgba(8, 12, 20, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 255, 0.22);
-  color: #dceeff;
-}
-
-.jk-input--glow {
-  box-shadow: 0 0 16px rgba(0, 200, 255, 0.3), inset 0 0 6px rgba(0, 255, 255, 0.15);
-  border-color: rgba(0, 255, 255, 0.32);
-}
-
-/* Neural background canvas */
-.jk-neural-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.6;
-  mix-blend-mode: screen;
-}
-
-/* Glassmorphism for cards */
-.jk-card {
-  position: relative;
-  overflow: hidden;
-  background: rgba(12, 16, 26, 0.32);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 255, 255, 0.12);
-  box-shadow:
-    0 0 18px rgba(0, 255, 255, 0.06),
-    inset 0 0 8px rgba(0, 255, 255, 0.05);
-  border-radius: 14px;
-  transition: all 0.28s ease;
-}
-
-.jk-card:hover {
-  border-color: #00ffff;
-  box-shadow:
-    0 0 30px rgba(0, 255, 255, 0.35),
-    inset 0 0 12px rgba(0, 255, 255, 0.15);
-}
-
-.jk-card--light {
-  background: rgba(12, 16, 26, 0.22);
-}
-
-.jk-card--strong {
-  background: rgba(12, 16, 26, 0.48);
-}
-
-.jk-card--glow {
-  box-shadow:
-    0 0 32px rgba(0, 255, 255, 0.25),
-    0 0 46px rgba(159, 71, 255, 0.2),
-    inset 0 0 12px rgba(0, 255, 255, 0.12);
-  border-image: linear-gradient(120deg, rgba(0, 255, 255, 0.5), rgba(180, 0, 255, 0.4)) 1;
-}
-
-/* Optional corner sparks when glow is on */
-.jk-card--glow::after {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border-radius: 12px;
-  pointer-events: none;
-  box-shadow:
-    0 0 24px rgba(0, 255, 255, 0.28),
-    0 0 28px rgba(180, 0, 255, 0.22);
-  opacity: 0.7;
-}
-
-/* Ambient glow overlay */
-body::after {
+/* Star field */
+body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.08), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(180, 0, 255, 0.08), transparent 40%);
-  z-index: 1;
   pointer-events: none;
+  background-image: 
+    radial-gradient(1px 1px at 15% 15%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 85% 25%, rgba(0, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 45% 65%, rgba(255, 0, 255, 0.4), transparent),
+    radial-gradient(2px 2px at 10% 80%, rgba(255, 255, 255, 0.7), transparent);
+  background-size: 400px 400px;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+/* WebGL container optimization */
+.jk-neural-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.5;
 }
