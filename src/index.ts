@@ -31,6 +31,7 @@ export * from './neural/useNeuralSystem';
 export * from './neural/neural-engine';
 export * from './neural/presets';
 export * from './neural/useNeuralGrid';
+export * from './neural/NeuralBackground';
 
 // Hooks
 export * from './hooks/useGlow';

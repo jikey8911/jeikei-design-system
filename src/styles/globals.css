@@ -4,7 +4,10 @@
 
 html,
 body {
-  background: #050911;
+  background: radial-gradient(circle at 20% 20%, rgba(0, 140, 255, 0.14), transparent 45%),
+    radial-gradient(circle at 80% 10%, rgba(0, 200, 255, 0.12), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(0, 170, 255, 0.1), transparent 55%),
+    #050911;
   color: #dceeff;
   position: relative;
   min-height: 100%;
@@ -26,18 +29,18 @@ body::before {
   background-image:
     radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.6), transparent),
     radial-gradient(1px 1px at 70% 40%, rgba(0, 200, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 30% 70%, rgba(0, 140, 255, 0.45), transparent),
-    radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.35), transparent);
-  opacity: 0.35;
-  filter: blur(0.2px);
+    radial-gradient(1px 1px at 30% 70%, rgba(0, 140, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.4), transparent);
+  opacity: 0.5;
+  filter: blur(0.3px);
 }
 
 body::after {
   background-image:
-    radial-gradient(140px 140px at 20% 20%, rgba(0, 140, 255, 0.18), transparent 50%),
-    radial-gradient(200px 200px at 70% 10%, rgba(0, 200, 255, 0.16), transparent 55%),
-    radial-gradient(260px 260px at 50% 80%, rgba(0, 170, 255, 0.12), transparent 60%);
-  opacity: 0.45;
+    radial-gradient(220px 220px at 20% 20%, rgba(0, 160, 255, 0.22), transparent 55%),
+    radial-gradient(260px 260px at 70% 10%, rgba(0, 220, 255, 0.2), transparent 60%),
+    radial-gradient(300px 300px at 50% 80%, rgba(0, 200, 255, 0.16), transparent 65%);
+  opacity: 0.55;
 }
 
 /* glow base */
@@ -50,8 +53,11 @@ body::after {
 
 /* glass */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 255, 255, 0.15);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.15),
+    inset 0 0 12px rgba(0, 255, 255, 0.05);
 }

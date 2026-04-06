@@ -12,9 +12,9 @@ export const NeoCard: React.FC<Props> = ({ title, value, glass = true, glow = tr
   return (
     <div
       className={cx(
-        'rounded-2xl p-6 transition hover:scale-[1.01]',
-        glass && 'glass',
-        glow && 'shadow-[0_0_22px_rgba(0,200,255,0.25)]',
+        'relative overflow-hidden rounded-2xl p-6 transition hover:scale-[1.01]',
+        glass && 'glass bg-gradient-to-br from-white/5 to-white/0',
+        glow && 'shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:shadow-[0_0_60px_rgba(0,255,255,0.35)]',
         className
       )}
       {...rest}

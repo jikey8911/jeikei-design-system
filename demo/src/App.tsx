@@ -1,61 +1,50 @@
-import React from 'react';
-import { NeoButton, NeoCard, NeoGrid, NeoInput, NeuralGrid } from 'jeikei-design-system';
+import React from "react";
+import { NeuralBackground, NeoButton, NeoCard, NeoInput } from "jeikei-design-system";
 
 export default function App() {
   return (
-    <div className="min-h-screen relative overflow-hidden text-[#dceeff]">
-      <NeuralGrid />
+    <div className="relative min-h-screen overflow-hidden">
+      <NeuralBackground />
 
-      <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-10">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-10 text-[#dceeff]">
         <header className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-black tracking-[0.35em] text-cyan-200">JEIKEI</h1>
-          <p className="text-sm tracking-[0.25em] text-cyan-100/80">DESIGN SYSTEM</p>
+          <h1 className="text-5xl font-bold text-cyan-300 tracking-[0.35em]">JEIKEI</h1>
+          <p className="text-gray-400 tracking-[0.3em] text-sm">DESIGN SYSTEM</p>
         </header>
 
-        <NeoGrid columns={{ base: 1, md: 2 }} gap="md" className="items-center">
-          <NeoCard glass glow>
-            <h3 className="text-lg font-semibold text-white mb-4">NeoButton</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="glass rounded-2xl border border-cyan-400/20 p-6 space-y-4 shadow-[0_0_25px_rgba(0,255,255,0.15)]">
+            <h2 className="text-lg text-cyan-200">NeoButton</h2>
             <div className="flex flex-wrap gap-3">
               <NeoButton>Primary</NeoButton>
               <NeoButton variant="secondary">Secondary</NeoButton>
               <NeoButton variant="outline">Outline</NeoButton>
             </div>
-          </NeoCard>
+          </div>
 
-          <NeoCard glass glow>
-            <h3 className="text-lg font-semibold text-white mb-4">NeoInput</h3>
+          <div className="glass rounded-2xl border border-cyan-400/20 p-6 space-y-4 shadow-[0_0_25px_rgba(0,255,255,0.15)]">
+            <h2 className="text-lg text-cyan-200">NeoInput</h2>
             <NeoInput placeholder="Type here..." />
-          </NeoCard>
-        </NeoGrid>
-
-        <div className="flex justify-center">
-          <NeoButton className="px-10 text-lg" glow>
-            NeoButton
-          </NeoButton>
+          </div>
         </div>
 
-        <NeoGrid columns={{ base: 1, md: 3 }} gap="md">
-          <NeoCard title="NeoCard" value="1,250" glass glow>
-            <p className="text-sm text-gray-300">Users Online</p>
-            <p className="text-3xl text-cyan-300 mt-1">1,250</p>
-          </NeoCard>
-          <NeoCard title="NeoCard" value="$32,400" glass glow>
-            <p className="text-sm text-gray-300">Revenue</p>
-            <p className="text-3xl text-cyan-300 mt-1">$32,400</p>
-          </NeoCard>
-          <NeoCard title="NeoCard" value="62%" glass glow>
-            <p className="text-sm text-gray-300">CPU Usage</p>
-            <p className="text-3xl text-cyan-300 mt-1">62%</p>
-          </NeoCard>
-        </NeoGrid>
+        <div className="flex justify-center">
+          <NeoButton className="px-10 text-lg shadow-[0_0_40px_rgba(0,255,255,0.55)]">NeoButton</NeoButton>
+        </div>
 
-        <NeoCard glass glow>
-          <h3 className="text-lg font-semibold text-white mb-2">Neural Grid Background</h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          <NeoCard title="NeoCard" value="1,250" />
+          <NeoCard title="NeoCard" value="$32,400" />
+          <NeoCard title="NeoCard" value="62%" />
+        </div>
+
+        <div className="glass rounded-2xl border border-cyan-400/20 p-6 shadow-[0_0_25px_rgba(0,255,255,0.15)]">
+          <h3 className="text-lg text-cyan-200 mb-2">Neural Grid Background</h3>
           <div className="h-56 relative rounded-2xl overflow-hidden">
-            <NeuralGrid />
+            <NeuralBackground />
           </div>
-        </NeoCard>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }
