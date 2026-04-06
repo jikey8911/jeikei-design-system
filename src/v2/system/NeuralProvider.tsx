@@ -1,0 +1,51 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { SystemContext, ThemeMode } from './SystemContext';
+import { NeuralEngine } from '../neural/NeuralEngine';
+import { getColorVars } from '../theme/colors';
+
+export const NeuralProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [theme, setTheme] = useState<ThemeMode>('nebula');
+  
+  const engine = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    return new NeuralEngine(window.innerWidth, window.innerHeight);
+  }, []);
+
+  useEffect(() => {
+    if (!engine) return;
+
+    let lastTime = performance.now();
+    let frame: number;
+
+    const loop = (time: number) => {
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+      const dt = Math.min(delta, 0.1);
+      engine.update(dt);
+      frame = requestAnimationFrame(loop);
+    };
+
+    const handleResize = () => {
+      engine.resize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    frame = requestAnimationFrame(loop);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(frame);
+      engine.destroy();
+    };
+  }, [engine]);
+
+  const styleVars = useMemo(() => getColorVars(theme), [theme]);
+
+  return (
+    <SystemContext.Provider value={{ engine, theme, setTheme }}>
+      <div className={`jk-system-root jk-theme-${theme}`} style={styleVars}>
+        {children}
+      </div>
+    </SystemContext.Provider>
+  );
+};

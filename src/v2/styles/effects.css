@@ -1,0 +1,29 @@
+.jk-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.jk-neo-glow {
+  box-shadow: 0 0 20px var(--neo-glow);
+  transition: box-shadow 0.3s ease;
+}
+
+.jk-neo-glow:hover {
+  box-shadow: 0 0 40px var(--neo-glow);
+}
+
+.jk-accent-text {
+  color: var(--neo-accent);
+  text-shadow: 0 0 8px var(--neo-glow);
+}
+
+.jk-border-accent {
+  border-color: var(--neo-accent);
+  box-shadow: inset 0 0 10px var(--neo-glow);
+}

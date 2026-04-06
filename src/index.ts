@@ -1,42 +1,13 @@
-import './styles/tailwind.css';
-import './styles/globals.css';
+// JeiKei Design System - Unified Entry Point
 
-// Tokens
-export * from './tokens/colors';
-export * from './tokens/glow';
-export * from './tokens/spacing';
-export * from './tokens/radius';
-export * from './tokens/shadows';
-export * from './tokens/animations';
+// V2 - Clean Architecture (Living Interface Engine)
+export * as V2 from './v2';
 
-// Utils
+// Legacy - Deprecated Components (Backward Compatibility)
+export * as Legacy from './legacy';
+
+// Default export for simpler V2 usage (Optional but recommended)
+export * from './v2';
+
+// Shared Utilities
 export * from './utils/cx';
-
-// Components
-export * from './components/NeoButton';
-export * from './components/NeoCard';
-export * from './components/NeoInput';
-export * from './components/NeoBadge';
-export * from './components/NeoPanel';
-export * from './components/NeoModal';
-export * from './components/NeoTabs';
-export * from './components/NeoGrid';
-export * from './components/NeoTable';
-export * from './components/NeoToast';
-
-// Layouts
-export * from './layouts/NeoLayout';
-
-// Neural system
-export * from './neural/NeuralEngine';
-export * from './neural/NeuralGrid';
-export * from './neural/useNeuralSystem';
-export * from './neural/neural-engine';
-export * from './neural/presets';
-export * from './neural/useNeuralGrid';
-export * from './neural/NeuralBackground';
-
-// Hooks
-export * from './hooks/useGlow';
-export * from './hooks/useHover';
-export * from './hooks/useKeyboardPulse';

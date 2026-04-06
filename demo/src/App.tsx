@@ -1,128 +1,132 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  NeoLayout, 
-  NeoButton, 
-  NeoCard, 
-  NeoPanel, 
-  NeoGrid 
-} from 'jeikei-design-system';
+import React from 'react';
+import { V2, cx } from 'jeikei-design-system';
 
-// Custom hook for "Living Interface" metrics
-const useSystemMetrics = () => {
-  const [metrics, setMetrics] = useState({
-    cpu: 62.4,
-    latency: 14,
-    load: 78,
-    signal: 91,
-    latencyTrend: true,
-    cpuTrend: true
-  });
+const { NeoLayout, NeoButton, NeoCard, useSystem } = V2;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(prev => ({
-        ...prev,
-        cpu: +(62 + Math.random() * 3).toFixed(1),
-        latency: Math.floor(12 + Math.random() * 5),
-        load: Math.floor(75 + Math.random() * 10),
-        signal: Math.floor(88 + Math.random() * 6),
-        latencyTrend: Math.random() > 0.5,
-        cpuTrend: Math.random() > 0.4
-      }));
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return metrics;
+const ThemeToggler = () => {
+  const { theme, setTheme } = useSystem();
+  return (
+    <NeoButton 
+      variant="secondary" 
+      size="sm" 
+      onClick={() => setTheme(theme === 'mission' ? 'nebula' : 'mission')}
+    >
+      MODE: {theme.toUpperCase()}
+    </NeoButton>
+  );
 };
 
-export default function App() {
-  const { cpu, latency, load, signal, latencyTrend, cpuTrend } = useSystemMetrics();
-
+function App() {
   return (
     <NeoLayout>
-      <div className="max-w-7xl mx-auto space-y-10 font-outfit">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5">
-          <div>
-            <h1 className="text-6xl font-bold tracking-tighter text-neo-text drop-shadow-[0_0_20px_rgba(0,255,255,0.4)]">
-              JEIKEI <span className="text-neo-accent">OS</span>
-            </h1>
-            <p className="text-[10px] uppercase tracking-[0.5em] text-neo-muted mt-3 font-bold opacity-70">
-              Neural Network Management Interface // STABLE BUILD 2.0.4
-            </p>
-          </div>
-          
-          <div className="flex gap-4">
-            <NeoButton variant="primary" className="h-11 px-10">Sync System</NeoButton>
-            <NeoButton variant="secondary" className="h-11 px-10">Diagnostics</NeoButton>
+      <div className="space-y-12">
+        {/* HERO SECTION */}
+        <div className="flex flex-col items-center text-center space-y-6 py-12">
+          <div className="jk-hud-heading text-neo-accent opacity-50 mb-[-1rem]">SYSTEM_CORE_UPGRADE</div>
+          <h1 className="text-7xl font-black tracking-tighter uppercase drop-shadow-[0_0_30px_var(--neo-glow)]">
+            Living Interface
+          </h1>
+          <p className="text-neo-muted max-w-xl jk-data-label text-xs tracking-widest leading-relaxed opacity-60">
+            A high-fidelity neural network engine synchronized across the entire visual system. 
+            Interaction-driven energy propagation with real-time WebGL rendering.
+          </p>
+          <div className="flex gap-4 pt-4">
+             <NeoButton size="lg">
+               Initialize System
+             </NeoButton>
+             <ThemeToggler />
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <NeoGrid columns={{ base: 1, md: 2, lg: 4 }} gap="md">
-          <NeoCard 
-            title="CPU Usage" 
-            value={cpu} 
-            unit="%" 
-            trend={{ value: '2.4%', up: cpuTrend }} 
-          />
-          <NeoCard 
-            title="Net Latency" 
-            value={latency} 
-            unit="ms" 
-            variant="magenta"
-            trend={{ value: '2ms', up: !latencyTrend }} 
-          />
-          <NeoCard 
-            title="Neural Load" 
-            value={load} 
-            unit="tps" 
-            trend={{ value: '12%', up: true }} 
-          />
-          <NeoCard 
-            title="Signal" 
-            value={signal} 
-            unit="dbm" 
-            trend={{ value: 'Optimal', up: true }} 
-          />
-        </NeoGrid>
+        {/* METRICS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <NeoCard title="Node Density" value="1,402" trend={{ value: '12%', direction: 'up' }} />
+          <NeoCard title="Neural Energy" value="0.84 μV" trend={{ value: 'STABLE', direction: 'neutral' }} />
+          <NeoCard title="Latency" value="1.2ms" trend={{ value: 'FAST', direction: 'up' }} />
+          <NeoCard title="Protocol" value="V2.0 PRO" trend={{ value: 'MODERN', direction: 'neutral' }} />
+        </div>
 
-        {/* Main Interface */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <NeoPanel title="Input Matrix" className="lg:col-span-2">
-            <div className="space-y-6">
-              <p className="text-sm text-neo-muted leading-relaxed max-w-2xl font-medium">
-                The neural grid is currently operating at <span className="text-neo-accent font-mono font-bold uppercase tracking-widest text-[11px]">OPTIMAL</span> capacity. 
-                All nodes are synced with the global pulse. Interaction waves are enabled for all user events.
-              </p>
-              
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-                <NeoButton variant="outline">Reset Nodes</NeoButton>
-                <NeoButton variant="outline">Purge Cache</NeoButton>
-                <NeoButton variant="outline">Re-Route</NeoButton>
-                <NeoButton variant="ghost">Advanced...</NeoButton>
+        {/* MAIN INTERFACE BLOCKS */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           {/* SIDEBAR BLOCK */}
+           <NeoCard title="System Parameters" className="lg:col-span-1">
+              <div className="space-y-6 py-2">
+                 <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                       <span className="jk-data-label text-[8px]">Simulation Sensitivity</span>
+                       <span className="jk-data-label text-neo-accent">85%</span>
+                    </div>
+                    <div className="h-[2px] w-full bg-white/5 rounded-full">
+                       <div className="h-full w-[85%] bg-neo-accent shadow-neon-primary" />
+                    </div>
+                 </div>
+
+                 <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                       <span className="jk-data-label text-[8px]">Interaction Decay</span>
+                       <span className="jk-data-label text-neo-magenta">40ms</span>
+                    </div>
+                    <div className="h-[2px] w-full bg-white/5 rounded-full">
+                       <div className="h-full w-[40%] bg-neo-magenta shadow-neon-magenta" />
+                    </div>
+                 </div>
+
+                 <div className="pt-4 grid grid-cols-2 gap-2">
+                    <NeoButton variant="outline" size="sm">Reset Mesh</NeoButton>
+                    <NeoButton variant="outline" size="sm">Calibrate</NeoButton>
+                 </div>
               </div>
-            </div>
-          </NeoPanel>
+           </NeoCard>
 
-          <NeoPanel title="Active Threads" subdued>
-            <div className="space-y-4 font-mono">
-              {[
-                { id: 'TX-902', status: 'ACTIVE', color: 'text-neo-accent' },
-                { id: 'KB-114', status: 'SYNCED', color: 'text-neo-accent' },
-                { id: 'QM-772', status: 'OVERLOAD', color: 'text-neo-magenta' },
-                { id: 'LR-009', status: 'IDLE', color: 'text-neo-muted' },
-              ].map(thread => (
-                <div key={thread.id} className="flex justify-between items-center border-b border-white/5 pb-2 last:border-0">
-                  <span className="text-[10px] text-white/50 font-bold">ID: {thread.id}</span>
-                  <span className={`text-[10px] font-bold tracking-widest ${thread.color}`}>{thread.status}</span>
-                </div>
-              ))}
-            </div>
-          </NeoPanel>
+           {/* CONTENT BLOCK */}
+           <NeoCard title="Live Process Feed" className="lg:col-span-2">
+              <div className="space-y-2 font-mono text-[9px]">
+                 {[
+                   { id: '4F9A', task: 'RECONSTRUCTING_GRID_LAYER', status: 'COMPLETE' },
+                   { id: '2B1C', task: 'OPTIMIZING_SHADERS_V2', status: 'IN_PROGRESS' },
+                   { id: '9E0D', task: 'SYNCING_CONTEXT_PROVIDER', status: 'ACTIVE' },
+                   { id: '7A8B', task: 'INJECTING_CSS_VARIABLES', status: 'DONE' },
+                   { id: '1F3E', task: 'DEPRECATING_LEGACY_CORE', status: 'WARNING' }
+                 ].map((log, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 border-b border-white/5 hover:bg-white/5 transition-colors group">
+                       <div className="flex items-center gap-4">
+                          <span className="text-neo-muted opacity-40">[{log.id}]</span>
+                          <span className="tracking-widest uppercase opacity-80 group-hover:opacity-100">{log.task}</span>
+                       </div>
+                       <span className={cx(
+                         "jk-data-label px-2 py-0.5 rounded",
+                         log.status === 'COMPLETE' ? 'text-green-500 bg-green-500/10' :
+                         log.status === 'ACTIVE' ? 'text-neo-accent bg-neo-accent/10' :
+                         log.status === 'WARNING' ? 'text-neo-magenta bg-neo-magenta/10' : 'text-white/40'
+                       )}>
+                         {log.status}
+                       </span>
+                    </div>
+                 ))}
+                 <div className="pt-4 flex justify-between items-center">
+                    <span className="jk-data-label opacity-20 italic">5 remaining tasks in queue...</span>
+                    <NeoButton variant="ghost" size="sm">Expand System Logs</NeoButton>
+                 </div>
+              </div>
+           </NeoCard>
+        </div>
+
+        {/* CALL TO ACTION / STRESS TEST */}
+        <div className="p-12 jk-glass rounded-[var(--neo-radius)] border border-white/5 text-center space-y-6 relative overflow-hidden group">
+           <div className="absolute inset-0 bg-neo-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+           <h2 className="jk-hud-heading text-3xl mb-2">Neural Stress Test</h2>
+           <p className="text-neo-muted max-w-lg mx-auto jk-data-label opacity-50">
+             Trigger system-wide interference patterns and witness the Living Interface react globally. 
+             Click anywhere or interact with buttons to propagate energy across the node network.
+           </p>
+           <div className="flex justify-center gap-6 pt-4">
+              <NeoButton variant="primary">Execute Wave</NeoButton>
+              <NeoButton variant="outline">Force Sync</NeoButton>
+           </div>
         </div>
       </div>
     </NeoLayout>
   );
 }
+
+export default App;

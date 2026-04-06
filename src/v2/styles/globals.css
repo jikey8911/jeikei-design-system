@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: var(--neo-bg, #02040a);
+    color: var(--neo-accent-strong, #fff);
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.jk-system-root {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Core Scanline Overlay */
+.jk-scanline {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.05) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.2;
+}
+
+/* Base HUD Elements */
+.jk-hud-heading {
+  @apply font-bold uppercase tracking-[0.3em] text-[10px];
+  color: var(--neo-accent);
+  opacity: 0.8;
+}
+
+.jk-data-label {
+  @apply font-mono text-[9px] uppercase tracking-widest;
+  color: var(--neo-muted);
+}
