@@ -8,8 +8,9 @@
     "outDir": "dist",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "stripInternal": true
   },
   "include": ["src"],
-  "exclude": ["**/*.stories.tsx", "**/*.stories.ts", "**/*.test.tsx", "**/*.test.ts"]
+  "exclude": ["**/*.stories.*", "demo", "dist"]
 }

@@ -1,14 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { NeuralEngine, NeuralEngineOptions, NeuralStateSnapshot } from '../neural/NeuralEngine';
 
-export const useNeuralSystem = (enabled: boolean = true) => {
+export const useNeuralSystem = (options: NeuralEngineOptions = {}) => {
+  const engineRef = useRef<NeuralEngine | null>(null);
+  const [snapshot, setSnapshot] = useState<NeuralStateSnapshot | null>(null);
+
   useEffect(() => {
-    if (!enabled) return;
-    document.body.style.backgroundColor = "#05070a";
-    document.body.style.color = "#ffffff";
-    document.body.classList.add('neural-system-active');
-
+    engineRef.current = new NeuralEngine(options);
+    const engine = engineRef.current;
+    const unsub = engine.subscribe(setSnapshot);
+    engine.start();
     return () => {
-      document.body.classList.remove('neural-system-active');
+      unsub();
+      engine.stop();
     };
-  }, [enabled]);
+  }, [options.density, options.speed, options.interactive, options.decay]);
+
+  const api = useMemo(
+    () => ({
+      addPulse: (point: { x: number; y: number }) => engineRef.current?.pulse(point),
+      disperse: () => engineRef.current?.disperse(),
+      setInteractive: (v: boolean) => engineRef.current?.setInteractive(v),
+      snapshot,
+    }),
+    [snapshot]
+  );
+
+  return api;
 };

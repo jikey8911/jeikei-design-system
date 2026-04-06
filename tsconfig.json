@@ -2,18 +2,26 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "types": ["node", "vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@jeikei/tokens": ["src/tokens"],
+      "@jeikei/components": ["src/components"],
+      "@jeikei/neural": ["src/neural"],
+      "@jeikei/hooks": ["src/hooks"],
+      "@jeikei/utils": ["src/utils"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "demo", ".storybook"]
 }

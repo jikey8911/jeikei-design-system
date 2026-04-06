@@ -1,119 +1,129 @@
 import React, { useEffect, useRef } from 'react';
-import { NeuralEngine } from './NeuralEngine';
+import { NeuralEngine, NeuralEngineOptions, NeuralStateSnapshot } from './NeuralEngine';
+import { cx } from '../utils/cx';
 
-export interface NeuralGridProps {
-  sparkles?: boolean;
-  gridSize?: number;
-  pulseInterval?: number;
+export type NeuralGridProps = NeuralEngineOptions & {
+  interactive?: boolean;
   className?: string;
-}
+  density?: number;
+  speed?: number;
+};
 
 export const NeuralGrid: React.FC<NeuralGridProps> = ({
-  sparkles = true,
-  gridSize = 80,
-  pulseInterval = 500,
-  className = "",
+  interactive = true,
+  density = 0.6,
+  speed = 1,
+  decay = 0.01,
+  className,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const engineRef = useRef<NeuralEngine>();
+  const snapshotRef = useRef<NeuralStateSnapshot>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const engine = new NeuralEngine({ density, speed, interactive, decay });
+    engineRef.current = engine;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const engine = new NeuralEngine(width, height, gridSize);
-
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      engine.init(width, height);
+    const resize = () => {
+      const { clientWidth, clientHeight } = canvas.parentElement ?? { clientWidth: 1200, clientHeight: 800 };
+      canvas.width = clientWidth;
+      canvas.height = clientHeight;
+      engine.setSize(clientWidth, clientHeight);
     };
+    resize();
 
-    window.addEventListener('resize', handleResize);
+    const unsub = engine.subscribe((snap) => {
+      snapshotRef.current = snap;
+    });
+    engine.start();
 
-    let animationFrameId: number;
-    let lastPulseTime = 0;
+    const render = () => {
+      const snap = snapshotRef.current;
+      if (canvas && snap) {
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#05070a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(32, 246, 184, 0.5)';
+        ctx.lineWidth = 1;
 
-    const render = (time: number) => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Draw Grid lines (subtle)
-      ctx.strokeStyle = "rgba(0, 255, 156, 0.05)";
-      ctx.lineWidth = 1;
-
-      for (let x = 0; x <= width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-
-      // Draw Nodes
-      ctx.fillStyle = "rgba(0, 255, 156, 0.2)";
-      engine.nodes.forEach(node => {
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      if (sparkles) {
-        if (time - lastPulseTime > pulseInterval) {
-          engine.createPulse();
-          lastPulseTime = time;
+        // connections
+        for (let i = 0; i < snap.nodes.length; i++) {
+          for (let j = i + 1; j < snap.nodes.length; j++) {
+            const a = snap.nodes[i];
+            const b = snap.nodes[j];
+            const dist = Math.hypot(a.x - b.x, a.y - b.y);
+            if (dist < 220) {
+              ctx.globalAlpha = 1 - dist / 220;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
         }
 
-        engine.update();
-
-        // Draw Pulses
-        engine.pulses.forEach(p => {
-          const currentX = p.from.x + (p.to.x - p.from.x) * p.progress;
-          const currentY = p.from.y + (p.to.y - p.from.y) * p.progress;
-
-          const gradient = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 4);
-          gradient.addColorStop(0, "rgba(0, 255, 225, 1)");
-          gradient.addColorStop(1, "rgba(0, 255, 225, 0)");
-
+        // nodes
+        snap.nodes.forEach((n) => {
+          const glow = Math.min(1, n.energy + 0.2);
+          const radius = 3 + n.energy * 3;
+          const gradient = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, radius * 4);
+          gradient.addColorStop(0, `rgba(0,255,156,${glow})`);
+          gradient.addColorStop(1, 'rgba(0,255,156,0)');
           ctx.fillStyle = gradient;
           ctx.beginPath();
-          ctx.arc(currentX, currentY, 4, 0, Math.PI * 2);
+          ctx.arc(n.x, n.y, radius * 2.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Glow effect
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = "rgba(0, 255, 225, 0.8)";
+          ctx.fillStyle = '#00ff9c';
           ctx.beginPath();
-          ctx.arc(currentX, currentY, 2, 0, Math.PI * 2);
+          ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0;
+        });
+
+        // pulses
+        snap.pulses.forEach((p) => {
+          ctx.strokeStyle = `rgba(0,255,156,${p.life})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, (1 - p.life) * 200, 0, Math.PI * 2);
+          ctx.stroke();
         });
       }
-
-      animationFrameId = requestAnimationFrame(render);
+      requestAnimationFrame(render);
     };
+    requestAnimationFrame(render);
 
-    animationFrameId = requestAnimationFrame(render);
-
+    window.addEventListener('resize', resize);
     return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+      unsub();
+      engine.stop();
     };
-  }, [sparkles, gridSize, pulseInterval]);
+  }, [density, speed, interactive, decay]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className={`fixed inset-0 pointer-events-none z-0 bg-[#05070a] ${className}`}
-    />
-  );
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const handler = (e: MouseEvent) => {
+      if (!interactive) return;
+      const rect = canvas.getBoundingClientRect();
+      engineRef.current?.pulse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+    canvas.addEventListener('click', handler);
+    return () => canvas.removeEventListener('click', handler);
+  }, [interactive]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === ' ') engineRef.current?.disperse();
+      if (e.key === 'Enter') engineRef.current?.pulse({ x: Math.random() * 600, y: Math.random() * 400 });
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  return <canvas ref={canvasRef} className={cx('w-full h-full absolute inset-0', className)} />;
 };

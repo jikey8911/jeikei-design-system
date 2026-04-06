@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neo-bg: #04060b;
+  --neo-glass: rgba(12, 16, 24, 0.65);
+  --neo-border: rgba(255, 255, 255, 0.08);
+  --neo-accent: #20f6b8;
+  --neo-accent-strong: #00ff9c;
+  --neo-magenta: #ff4bd8;
+  --neo-cyan: #34d8ff;
+  --neo-amber: #f2b93b;
+  --neo-text: #e5f0ff;
+  color: var(--neo-text);
+  background: var(--neo-bg);
+}
+
+body {
+  background-color: var(--neo-bg);
+  color: var(--neo-text);
+}
+
+.glass-surface {
+  @apply neo-glass rounded-neo-lg shadow-panel border neo-border;
+}
+
+.glow-ring {
+  box-shadow: 0 0 30px rgba(0, 255, 156, 0.35);
+}
