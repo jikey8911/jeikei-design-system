@@ -1,4 +1,10 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "jeikei-design-system": ["../src/index.ts"]
+    }
+  },
   "include": ["src", "vite.config.ts"]
 }

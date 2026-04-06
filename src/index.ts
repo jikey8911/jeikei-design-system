@@ -24,6 +24,9 @@ export * from './components/NeoGrid';
 export * from './components/NeoTable';
 export * from './components/NeoToast';
 
+// Layouts
+export * from './layouts/NeoLayout';
+
 // Neural system
 export * from './neural/NeuralEngine';
 export * from './neural/NeuralGrid';

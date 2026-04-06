@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .neo-glass {
+    background: var(--neo-glass, rgba(12, 16, 24, 0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .neo-border {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
 :root {
   --neo-bg: #04060b;
   --neo-glass: rgba(12, 16, 24, 0.65);
@@ -21,12 +34,14 @@ body {
   color: var(--neo-text);
 }
 
-.glass-surface {
-  @apply neo-glass rounded-neo-lg shadow-panel border neo-border;
-}
+@layer components {
+  .glass-surface {
+    @apply neo-glass rounded-neo-lg shadow-panel border neo-border;
+  }
 
-.glow-ring {
-  box-shadow: 0 0 30px rgba(0, 255, 156, 0.35);
+  .glow-ring {
+    box-shadow: 0 0 30px rgba(0, 255, 156, 0.35);
+  }
 }
 
 .jk-btn-glow {
