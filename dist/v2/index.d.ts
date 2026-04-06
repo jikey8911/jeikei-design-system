@@ -1,3 +1,5 @@
+import './styles/globals.css';
+import './styles/effects.css';
 export { NeoButton } from './components/NeoButton';
 export { NeoCard } from './components/NeoCard';
 export { NeoInput } from './components/NeoInput';

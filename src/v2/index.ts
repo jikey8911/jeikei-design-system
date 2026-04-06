@@ -1,3 +1,7 @@
+// Auto-import base styles — consumers don't need to import CSS manually
+import './styles/globals.css';
+import './styles/effects.css';
+
 // Global Components
 export { NeoButton } from './components/NeoButton';
 export { NeoCard } from './components/NeoCard';

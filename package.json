@@ -7,14 +7,15 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "style": "./dist/style.css",
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./v2": {
-      "import": "./dist/v2.js",
-      "require": "./dist/v2.cjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./style.css": "./dist/style.css",
     "./dist/style.css": "./dist/style.css"
