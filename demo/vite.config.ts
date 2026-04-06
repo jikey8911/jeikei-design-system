@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      'jeikei-design-system/style.css': path.resolve(__dirname, '../dist/jeikei-design-system.css'),
     },
   },
 });

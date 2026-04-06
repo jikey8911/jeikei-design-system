@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "pnpm run -C .. build:lib && vite",
+    "build": "pnpm run -C .. build:lib && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
