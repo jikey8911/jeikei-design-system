@@ -53,14 +53,28 @@ export const NeuralBackground: React.FC = () => {
     const points = new THREE.Points(pointsGeo, pointsMat);
     scene.add(points);
 
+    // Edges Material
+    const edgesGeo = new THREE.BufferGeometry();
+    const edgesMat = new THREE.LineBasicMaterial({
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      color: theme === 'mission' ? 0xf2b93b : 0x34d8ff,
+      opacity: 0.15
+    });
+
+    const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
+    scene.add(edgesMesh);
+
     // Performance tracking
     let frameCount = 0;
     let lastFpsUpdate = performance.now();
 
     // Subscribe to Engine
     const unsubscribe = engine.subscribe((state) => {
-      const { nodes } = state;
+      const { nodes, edges } = state;
       
+      // Update Nodes
       const posArr = new Float32Array(nodes.length * 3);
       const enArr = new Float32Array(nodes.length);
       
@@ -73,6 +87,22 @@ export const NeuralBackground: React.FC = () => {
 
       pointsGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
       pointsGeo.setAttribute('aEnergy', new THREE.BufferAttribute(enArr, 1));
+      
+      // Update Edges
+      const edgePosArr = new Float32Array(edges.length * 6);
+      edges.forEach((edge, i) => {
+        const nodeA = nodes[edge.from];
+        const nodeB = nodes[edge.to];
+        if (nodeA && nodeB) {
+          edgePosArr[i * 6] = nodeA.position[0] - window.innerWidth / 2;
+          edgePosArr[i * 6 + 1] = nodeA.position[1] - window.innerHeight / 2;
+          edgePosArr[i * 6 + 2] = nodeA.position[2];
+          edgePosArr[i * 6 + 3] = nodeB.position[0] - window.innerWidth / 2;
+          edgePosArr[i * 6 + 4] = nodeB.position[1] - window.innerHeight / 2;
+          edgePosArr[i * 6 + 5] = nodeB.position[2];
+        }
+      });
+      edgesGeo.setAttribute('position', new THREE.BufferAttribute(edgePosArr, 3));
       
       pointsMat.uniforms.uTime.value = performance.now() * 0.001;
       renderer.render(scene, camera);

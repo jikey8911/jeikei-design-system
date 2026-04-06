@@ -39,6 +39,10 @@ export const NeuralProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
   }, [engine]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   const styleVars = useMemo(() => getColorVars(theme), [theme]);
 
   return (

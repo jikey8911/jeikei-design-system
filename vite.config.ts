@@ -6,10 +6,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        v2: path.resolve(__dirname, 'src/v2/index.ts'),
+        legacy: path.resolve(__dirname, 'src/legacy/index.ts'),
+      },
       name: 'JeiKeiDesignSystem',
-      fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
       formats: ['es', 'cjs'],
+      fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'clsx'],

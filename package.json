@@ -9,18 +9,18 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/v2/index.ts",
-      "import": "./src/v2/index.ts"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./v2": {
-      "types": "./src/v2/index.ts",
-      "import": "./src/v2/index.ts"
+      "import": "./dist/v2.js",
+      "require": "./dist/v2.cjs"
     },
     "./legacy": {
-      "types": "./src/legacy/index.ts",
-      "import": "./src/legacy/index.ts"
+      "import": "./dist/legacy.js",
+      "require": "./dist/legacy.cjs"
     },
-    "./style.css": "./src/v2/styles/globals.css"
+    "./style.css": "./dist/style.css"
   },
   "files": [
     "dist"
