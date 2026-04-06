@@ -1,6 +1,6 @@
 import { cx } from '../utils/cx';
 
-type VariantOptions = {
+export type VariantOptions = {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
   glow?: boolean;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';

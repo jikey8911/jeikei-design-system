@@ -1,10 +1,10 @@
 import React from 'react';
-import { applyCommonStyles } from './variants';
+import { applyCommonStyles, type VariantOptions } from './variants';
 import { cx } from '../utils/cx';
 
 export type NeoButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Parameters<typeof applyCommonStyles>[0]['variant'];
-  size?: Parameters<typeof applyCommonStyles>[0]['size'];
+  variant?: VariantOptions['variant'];
+  size?: VariantOptions['size'];
   glow?: boolean;
   fullWidth?: boolean;
   leadingIcon?: React.ReactNode;

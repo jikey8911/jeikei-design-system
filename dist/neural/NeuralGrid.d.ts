@@ -1,8 +1,9 @@
 import React from 'react';
-export interface NeuralGridProps {
-    sparkles?: boolean;
-    gridSize?: number;
-    pulseInterval?: number;
+import { NeuralEngineOptions } from './NeuralEngine';
+export type NeuralGridProps = NeuralEngineOptions & {
+    interactive?: boolean;
     className?: string;
-}
+    density?: number;
+    speed?: number;
+};
 export declare const NeuralGrid: React.FC<NeuralGridProps>;
