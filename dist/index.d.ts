@@ -22,4 +22,3 @@ export * from './neural/useNeuralSystem';
 export * from './hooks/useGlow';
 export * from './hooks/useHover';
 export * from './hooks/useKeyboardPulse';
-export * from './hooks/useNeuralSystem';
